@@ -1,0 +1,41 @@
+name: DLM API Probe
+
+# Diagnostic-only: hits the duellinksmeta API from a GitHub-hosted runner (which
+# has outbound internet) and commits the captured response shape back to the
+# repo so the deck parser can be built against real data.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/duellinks-tournament-bot-LV24s
+    paths-ignore:
+      - 'data/**'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run probe
+        run: python scripts/probe.py
+
+      - name: Commit probe result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/probe-result.json
+          if git diff --cached --quiet; then
+            echo "No change in probe result."
+          else
+            git commit -m "chore: capture DLM API probe result [skip ci]"
+            git push
+          fi
