@@ -85,6 +85,14 @@ def _resolve_archetype(groups: dict[str, list[Deck]], query: str) -> str | None:
     return None
 
 
+def _notify(webhook: str, embeds: list[dict], **kwargs) -> None:
+    """Call send_embeds; log and continue on Discord errors so they never crash the run."""
+    try:
+        send_embeds(webhook, embeds, **kwargs)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[Discord error - state will still be saved] {exc}")
+
+
 def _group_by_tournament(decks: list[Deck]) -> list[tuple[str, list[Deck]]]:
     """Return (label, deck_list) pairs, one per tournament, oldest-first."""
     seen: dict[str, list[Deck]] = {}
@@ -123,7 +131,7 @@ def cmd_run(_: argparse.Namespace) -> int:
         latest = next((d for d in decks if d.category == TOURNAMENT), None)
         print(f"First run: seeded {len(all_ids)} decks as known.")
         if webhook:
-            send_embeds(webhook, [startup_embed(len(all_ids), latest)], username=username)
+            _notify(webhook, [startup_embed(len(all_ids), latest)], username=username)
         return 0
 
     new = sorted(
@@ -145,7 +153,7 @@ def cmd_run(_: argparse.Namespace) -> int:
         ]
         content = f"**{label}** — {len(embeds)}件の入賞構築"
         if webhook:
-            send_embeds(webhook, embeds, content=content, username=username)
+            _notify(webhook, embeds, content=content, username=username)
         else:
             print(f"[dry-run] {content}")
             for d in event_decks:
