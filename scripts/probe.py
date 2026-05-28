@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Diagnostic probe for the duellinksmeta (DLM) API.
+"""Diagnostic probe for the duellinksmeta (DLM) API (round 3: tournament schema).
 
-Purpose: this repo's bot must run somewhere with outbound internet (GitHub
-Actions). Before building the deck parser/analyzer we need to confirm two
-things from such an environment:
+Rounds 1-2 established: API reachable from Actions; deck schema known; there is
+no tournament-only query param (filter client-side); pagination uses `page`.
+King of Games decks have rankedType.name == "King of Games" and url under
+/king-of-games/; tournament decks have a null rankedType and url under
+/community-tournaments/ (or similar).
 
-  1. Is the DLM API reachable at all (or blocked by Cloudflare / a challenge)?
-  2. What is the real response shape for top-decks / tournaments / cards?
+This round dumps the FULL object of a few non-KoG (tournament) decks so we can
+see how the tournament name / placement is represented, which the Discord
+notification needs ("X placed Top 4 at tournament Y").
 
-The probe never raises on HTTP or network errors - it records them, because a
-403 or a Cloudflare challenge page is itself a useful result. Output is written
-to data/probe-result.json (committed back by the workflow) and printed to the
-Actions log. Uses only the standard library so no install step is required.
+Output -> data/probe-result.json. Stdlib only; never raises.
 """
 from __future__ import annotations
 
@@ -22,16 +22,6 @@ from pathlib import Path
 from urllib import error, request
 
 BASE = "https://www.duellinksmeta.com"
-
-# Best-guess endpoints. The exact params are unknown, so probe a few variants;
-# one run then tells us which work and what they return.
-ENDPOINTS = [
-    "/api/v1/top-decks?limit=3",
-    "/api/v1/top-decks?limit=3&sort=-created",
-    "/api/v1/tournaments?limit=2",
-    "/api/v1/cards?limit=1",
-]
-
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -42,92 +32,60 @@ HEADERS = {
     "Referer": f"{BASE}/top-decks",
     "Origin": BASE,
 }
-
 OUT = Path(__file__).resolve().parent.parent / "data" / "probe-result.json"
 
-INTERESTING_HEADERS = (
-    "content-type",
-    "server",
-    "cf-ray",
-    "cf-cache-status",
-    "x-cache",
-    "x-deny-reason",
-    "retry-after",
-)
 
-
-def summarize(data, depth: int = 0):
-    """Compact description of a JSON value (keys + value types/lengths) so the
-    committed result stays readable even for large payloads."""
-    if depth > 6:
-        return "<...>"
-    if isinstance(data, dict):
-        return {k: summarize(v, depth + 1) for k, v in list(data.items())[:60]}
-    if isinstance(data, list):
-        return {
-            "_type": "list",
-            "_len": len(data),
-            "_first": summarize(data[0], depth + 1) if data else None,
-        }
-    if isinstance(data, str):
-        return f"<str len={len(data)}>" if len(data) > 80 else data
-    return data
-
-
-def probe(path: str) -> dict:
-    url = BASE + path
-    req = request.Request(url, headers=HEADERS, method="GET")
-    started = time.time()
-    result: dict = {"url": url}
+def fetch(path: str):
+    req = request.Request(BASE + path, headers=HEADERS, method="GET")
     try:
         with request.urlopen(req, timeout=30) as resp:
-            body = resp.read()
-            text = body.decode("utf-8", errors="replace")
-            result["status"] = resp.status
-            result["resp_headers"] = {
-                h: resp.headers.get(h) for h in INTERESTING_HEADERS if resp.headers.get(h)
-            }
-            ctype = resp.headers.get("content-type", "")
-            if "json" in ctype or text[:1] in "[{":
-                try:
-                    parsed = json.loads(text)
-                    result["json_summary"] = summarize(parsed)
-                    # Keep one full item so we can see the exact deck schema.
-                    result["sample_item"] = (
-                        parsed[0] if isinstance(parsed, list) and parsed else parsed
-                    )
-                except json.JSONDecodeError as exc:
-                    result["json_error"] = str(exc)
-                    result["body_snippet"] = text[:1500]
-            else:
-                result["body_snippet"] = text[:1500]
-    except error.HTTPError as exc:
-        result["status"] = exc.code
-        result["error"] = f"HTTPError {exc.code} {exc.reason}"
-        result["resp_headers"] = {
-            h: exc.headers.get(h) for h in INTERESTING_HEADERS if exc.headers and exc.headers.get(h)
-        }
-        try:
-            result["body_snippet"] = exc.read().decode("utf-8", errors="replace")[:1500]
-        except Exception:  # noqa: BLE001
-            pass
-    except Exception as exc:  # noqa: BLE001 - every failure mode is informative
-        result["error"] = f"{type(exc).__name__}: {exc}"
-    result["elapsed_s"] = round(time.time() - started, 2)
-    return result
+            return json.loads(resp.read().decode("utf-8", errors="replace"))
+    except (error.HTTPError, Exception) as exc:  # noqa: BLE001
+        return {"_probe_error": f"{type(exc).__name__}: {exc}"}
+
+
+def strip_cards(deck: dict) -> dict:
+    """Drop the bulky main/extra/side card arrays so the dumped object is small
+    and the tournament/placement metadata is easy to read."""
+    out = {}
+    for k, v in deck.items():
+        if k in ("main", "extra", "side"):
+            out[k] = f"<{len(v)} cards>" if isinstance(v, list) else v
+        else:
+            out[k] = v
+    return out
 
 
 def main() -> None:
-    report = {
-        "probed_at": datetime.now(timezone.utc).isoformat(),
-        "base": BASE,
-        "results": [probe(p) for p in ENDPOINTS],
-    }
+    decks = fetch("/api/v1/top-decks?sort=-created&limit=60")
+    report = {"probed_at": datetime.now(timezone.utc).isoformat(), "base": BASE}
+
+    if not isinstance(decks, list):
+        report["error"] = decks
+    else:
+        non_kog = [
+            d for d in decks
+            if not str(d.get("url", "")).startswith("/king-of-games/")
+        ]
+        report["top_level_keys_kog"] = sorted(
+            next((d.keys() for d in decks if str(d.get("url", "")).startswith("/king-of-games/")), [])
+        )
+        report["top_level_keys_non_kog"] = sorted(non_kog[0].keys()) if non_kog else []
+        report["non_kog_count_in_60"] = len(non_kog)
+        # Full (card-stripped) objects of a few tournament decks.
+        report["non_kog_samples"] = [strip_cards(d) for d in non_kog[:4]]
+        # Also show the distinct url path prefixes present, to map categories.
+        prefixes = {}
+        for d in decks:
+            parts = str(d.get("url", "")).split("/")
+            prefix = "/" + parts[1] if len(parts) > 1 else d.get("url")
+            prefixes.setdefault(prefix, 0)
+            prefixes[prefix] += 1
+        report["url_prefix_breakdown"] = prefixes
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False))
     print(json.dumps(report, indent=2, ensure_ascii=False))
-    reachable = sorted({r.get("status") for r in report["results"] if r.get("status")})
-    print(f"\n=== status codes seen: {reachable} ===")
 
 
 if __name__ == "__main__":

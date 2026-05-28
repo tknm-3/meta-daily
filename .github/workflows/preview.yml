@@ -1,0 +1,42 @@
+name: DLM Preview
+
+# Inspect what the bot would post, against live data, without touching Discord
+# or the seen-state. Auto-runs on src changes (this branch) and commits
+# data/preview.json so the rendered output can be reviewed.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/duellinks-tournament-bot-LV24s
+    paths:
+      - 'src/**'
+      - '.github/workflows/preview.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build live preview
+        run: PYTHONPATH=src python -m dlm.bot preview --limit 6
+
+      - name: Commit preview
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/preview.json
+          if git diff --cached --quiet; then
+            echo "No preview change."
+          else
+            git commit -m "chore: update live preview [skip ci]"
+            git push
+          fi

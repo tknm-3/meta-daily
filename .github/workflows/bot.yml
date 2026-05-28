@@ -1,0 +1,51 @@
+name: DLM Tournament Bot
+
+# Production tracker: every run pulls recent top decks, posts newly-seen
+# tournament placings to Discord, and commits the updated seen-state.
+#
+# NOTE: scheduled (cron) workflows only fire from the repository's DEFAULT
+# branch, so this becomes active once merged. Until then, trigger manually via
+# "Run workflow" (workflow_dispatch). Requires the DISCORD_WEBHOOK_URL secret;
+# without it the run is a no-op dry-run (logs what it would post).
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dlm-bot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run tracker
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USERNAME: DLM Tournament Tracker
+          DLM_INCLUDE_KOG: ${{ vars.DLM_INCLUDE_KOG }}
+        run: PYTHONPATH=src python -m dlm.bot run
+
+      - name: Commit seen-state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/seen.json
+          if git diff --cached --quiet; then
+            echo "No state change."
+          else
+            git commit -m "chore: update seen decks [skip ci]"
+            git push
+          fi

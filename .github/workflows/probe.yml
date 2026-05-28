@@ -9,8 +9,8 @@ on:
   push:
     branches:
       - claude/duellinks-tournament-bot-LV24s
-    paths-ignore:
-      - 'data/**'
+    paths:
+      - 'scripts/probe.py'
 
 permissions:
   contents: write
