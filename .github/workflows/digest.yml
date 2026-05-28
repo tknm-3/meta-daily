@@ -1,0 +1,47 @@
+name: DLM Meta Digest
+
+# Posts the glanceable meta digest (winning deck types, rising archetypes,
+# trending generic staples — with artwork) to Discord.
+#
+# Cadence: once a day on a schedule, AND immediately after every deploy (push to
+# main) so a freshly shipped change is visible right away. Also runnable on
+# demand via "Run workflow".
+#
+# NOTE: scheduled (cron) workflows only fire from the repository's DEFAULT
+# branch, so the daily run becomes active once this is merged to main. Requires
+# the DISCORD_WEBHOOK_URL secret; without it the run is a dry-run (logs only).
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 09:00 UTC daily (= 18:00 JST)
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '.github/workflows/digest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dlm-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Post meta digest
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USERNAME: DLM Meta Digest
+          DLM_WINDOW_DAYS: ${{ vars.DLM_WINDOW_DAYS }}
+        run: PYTHONPATH=src python -m dlm.bot digest

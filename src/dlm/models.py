@@ -49,6 +49,7 @@ class Deck:
     tournament_name: str | None = None
     placement: str | None = None
     tournament_category: str | None = None
+    tournament_icon: str | None = None  # site-relative logo path from the payload
     report_url: str | None = None
     # KoG/featured label, e.g. "King of Games" / "Spicy Win Streaks":
     ranked_label: str | None = None
@@ -127,6 +128,7 @@ def parse_deck(raw: dict) -> Deck:
     deck_type = raw.get("deckType") or {}
     category, ranked_label = _category(raw)
     linked = raw.get("linkedArticle") or {}
+    ttype = raw.get("tournamentType") or {}
     return Deck(
         id=raw.get("_id", ""),
         created=_parse_dt(raw.get("created")),
@@ -144,6 +146,7 @@ def parse_deck(raw: dict) -> Deck:
         tournament_name=_tournament_name(raw) if category == TOURNAMENT else None,
         placement=raw.get("tournamentPlacement") if category == TOURNAMENT else None,
         tournament_category=_name_field(raw.get("tournamentType")),
+        tournament_icon=(ttype.get("icon") if isinstance(ttype, dict) else None),
         report_url=(linked.get("url") if isinstance(linked, dict) else None),
         ranked_label=ranked_label,
     )

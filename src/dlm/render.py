@@ -1,4 +1,9 @@
-"""Format decks and analysis into Discord webhook embeds / text.
+"""Format analysis into Discord webhook embeds / text.
+
+The headline output is the *meta digest* (see trends.py): a compact, glanceable
+embed pair — winning deck types + rising archetypes, and trending generic
+staples with card art — rather than full decklists. Detailed lists live on
+duellinksmeta.com, which every digest links to.
 
 Discord limits respected: embed title <=256, description <=4096, field value
 <=1024, <=25 fields, <=10 embeds per message.
@@ -6,40 +11,19 @@ Discord limits respected: embed title <=256, description <=4096, field value
 from __future__ import annotations
 
 from .analyze import ArchetypeReport, GenericStaple
-from .models import Deck
+from .assets import card_image_url, site_asset_url
+from .client import BASE
+from .trends import ArchetypeTrend, Digest, StapleTrend, WinningDeck
 
 FIELD_LIMIT = 1024
 
-_PLACEMENT_COLOR = {
-    "1st place": 0xFFD700,
-    "2nd place": 0xC0C0C0,
-    "3rd place": 0xCD7F32,
-}
-_DEFAULT_COLOR = 0x5865F2
+_GOLD = 0xFFD700
+_BLUE = 0x5865F2
 
+TOP_DECKS_URL = f"{BASE}/top-decks"
+TOURNAMENTS_URL = f"{BASE}/tournaments"
 
-def _color(deck: Deck) -> int:
-    if deck.placement:
-        return _PLACEMENT_COLOR.get(deck.placement.lower(), _DEFAULT_COLOR)
-    return _DEFAULT_COLOR
-
-
-def _total(cards) -> int:
-    return sum(c.amount for c in cards)
-
-
-def _card_lines(cards, *, budget: int = FIELD_LIMIT) -> str:
-    lines: list[str] = []
-    used = 0
-    ordered = sorted(cards, key=lambda c: (-c.amount, c.name))
-    for c in ordered:
-        line = f"`{c.amount}` {c.name}"
-        if used + len(line) + 1 > budget:
-            lines.append("…")
-            break
-        lines.append(line)
-        used += len(line) + 1
-    return "\n".join(lines) if lines else "—"
+_ARROW = {"new": "🆕", "up": "📈", "down": "📉", "flat": "➖"}
 
 
 def _pct(x: float) -> str:
@@ -53,78 +37,129 @@ def _copies(stat) -> str:
     return f"{stat.mode_copies}枚 (avg {stat.avg_copies:.1f})"
 
 
-def _tier(deck: Deck) -> str:
-    return f"Tier {deck.tier}" if deck.tier else "Tier -"
+def _arrow(direction: str) -> str:
+    return _ARROW.get(direction, "")
 
 
-def deck_embed(
-    deck: Deck,
-    report: ArchetypeReport | None = None,
-    staples_here: list[GenericStaple] | None = None,
+def _join_budget(lines: list[str], budget: int = FIELD_LIMIT) -> str:
+    """Join lines with newlines, stopping (with an ellipsis) before `budget`."""
+    out: list[str] = []
+    used = 0
+    for line in lines:
+        if used + len(line) + 1 > budget:
+            out.append("…")
+            break
+        out.append(line)
+        used += len(line) + 1
+    return "\n".join(out) if out else "—"
+
+
+# --------------------------------------------------------------------------- #
+# Meta digest                                                                  #
+# --------------------------------------------------------------------------- #
+
+def _winning_line(w: WinningDeck) -> str:
+    arrow = _arrow(w.trend)
+    if w.firsts:
+        body = f"🏆{w.firsts} ・ 入賞{w.entries}件"
+    else:
+        body = f"入賞{w.entries}件"
+    return f"**{w.archetype}** — {body} {arrow}".rstrip()
+
+
+def _archetype_line(t: ArchetypeTrend) -> str:
+    delta = t.count - t.prev_count
+    sign = f"+{delta}" if delta > 0 else str(delta)
+    return f"{_arrow(t.trend)} **{t.archetype}** {t.count}件 ({_pct(t.share)}・前比{sign})"
+
+
+def _staple_line(s: StapleTrend) -> str:
+    g = s.staple
+    rarity = f" [{g.rarity}]" if g.rarity else ""
+    return f"{_arrow(s.trend)} **{g.name}**{rarity} — {g.spread}デッキ採用・全体{_pct(g.overall_adoption)}"
+
+
+def summary_embed(
+    digest: Digest,
+    *,
+    top_winners: int = 8,
+    top_archetypes: int = 6,
 ) -> dict:
-    header_bits = []
-    if deck.placement:
-        header_bits.append(f"**{deck.placement}**")
-    if deck.tournament_name:
-        header_bits.append(f"@ {deck.tournament_name}")
-    desc_lines = [" ".join(header_bits)] if header_bits else []
-    meta = f"by {deck.author} ・ {_tier(deck)}"
-    if deck.skill:
-        meta += f" ・ Skill: {deck.skill}"
-    if deck.created:
-        meta += f" ・ {deck.created:%Y-%m-%d}"
-    desc_lines.append(meta)
-    if deck.report_full_url:
-        desc_lines.append(f"[大会レポート]({deck.report_full_url})")
-
-    title = deck.archetype + (" (Rush)" if deck.is_rush else "")
-    embed = {
-        "title": title[:256],
-        "url": deck.full_url,
-        "color": _color(deck),
-        "description": "\n".join(desc_lines)[:4096],
-        "fields": [
-            {
-                "name": f"メインデッキ ({_total(deck.main)}枚)",
-                "value": _card_lines(deck.main),
-                "inline": False,
-            }
-        ],
+    span = f"{digest.window_start:%m/%d} 〜 {digest.generated_at:%m/%d}"
+    desc = [
+        f"🗓️ **直近{digest.window_days}日間**（{span}）の大会・環境まとめ",
+        f"📦 集計対象 {digest.total_decks} 構築（うち大会 {digest.tournament_decks} 件）",
+        f"🔗 細かいレシピは [DuelLinksMeta の TOP DECKS]({TOP_DECKS_URL}) でチェック",
+    ]
+    embed: dict = {
+        "title": f"📊 Duel Links 環境まとめ ｜ 直近{digest.window_days}日",
+        "url": TOP_DECKS_URL,
+        "color": _GOLD,
+        "description": "\n".join(desc)[:4096],
+        "fields": [],
+        "footer": {"text": "📈上昇 📉下降 🆕新顔 ➖横ばい（前の同期間との比較）"},
     }
-    if deck.extra:
+    icon = site_asset_url(digest.headline_icon)
+    if icon:
+        embed["thumbnail"] = {"url": icon}
+
+    winners = digest.winning_decks[:top_winners]
+    if winners:
         embed["fields"].append(
             {
-                "name": f"エクストラ ({_total(deck.extra)}枚)",
-                "value": _card_lines(deck.extra),
+                "name": "🏆 大会で勝っているデッキ",
+                "value": _join_budget([_winning_line(w) for w in winners]),
                 "inline": False,
             }
         )
-    if staples_here:
-        names = "、".join(s.name for s in staples_here[:20])
+
+    # Highlight movers: things rising or newly appearing, biggest delta first.
+    movers = [t for t in digest.rising_archetypes if t.trend in ("up", "new") and t.count >= 2]
+    if movers:
         embed["fields"].append(
-            {"name": "このリストの汎用札", "value": names[:FIELD_LIMIT], "inline": False}
+            {
+                "name": "📈 ここ数日で伸びているデッキ",
+                "value": _join_budget([_archetype_line(t) for t in movers[:top_archetypes]]),
+                "inline": False,
+            }
         )
-    if report and report.sample_size >= 3:
-        core = report.by_role("core")[:12]
-        if core:
-            lines = [f"`{_copies(s)}` {s.name} ({_pct(s.adoption)})" for s in core]
-            value = "\n".join(lines)[:FIELD_LIMIT]
-            embed["fields"].append(
-                {
-                    "name": f"{report.archetype} の確定枠 (直近{report.sample_size}件)",
-                    "value": value,
-                    "inline": False,
-                }
-            )
     return embed
 
 
-def startup_embed(total_tracked: int, latest: Deck | None) -> dict:
-    desc = f"入賞構築の追跡を開始しました。現在 {total_tracked} 件を既知として記録。"
-    if latest and latest.tournament_name:
-        desc += f"\n最新の大会: {latest.tournament_name} — {latest.archetype}（{latest.placement}）"
-    return {"title": "Duel Links 大会構築トラッカー 起動", "color": _DEFAULT_COLOR, "description": desc[:4096]}
+def staples_embed(digest: Digest, *, top: int = 12) -> dict | None:
+    staples = digest.staples[:top]
+    if not staples:
+        return None
+    embed: dict = {
+        "title": "🃏 流行りの汎用札（複数デッキで採用）",
+        "url": TOP_DECKS_URL,
+        "color": _BLUE,
+        "description": _join_budget([_staple_line(s) for s in staples], budget=4096),
+    }
+    # Lead card's art as a thumbnail to make the post visual at a glance.
+    art = next((card_image_url(s.staple.card_id) for s in staples if s.staple.card_id), None)
+    if art:
+        embed["thumbnail"] = {"url": art}
+    return embed
 
+
+def digest_embeds(digest: Digest) -> list[dict]:
+    """The full digest as a list of embeds (one Discord message)."""
+    embeds = [summary_embed(digest)]
+    staples = staples_embed(digest)
+    if staples:
+        embeds.append(staples)
+    return embeds
+
+
+def digest_content(digest: Digest) -> str:
+    """Short message text shown above the embeds (mobile push preview)."""
+    return f"📊 直近{digest.window_days}日間のDuel Links環境まとめ"
+
+
+# --------------------------------------------------------------------------- #
+# CLI text helpers (analyze / staples commands)                                #
+# --------------------------------------------------------------------------- #
 
 def archetype_report_text(report: ArchetypeReport, staples: list[GenericStaple]) -> str:
     """Plain-text breakdown for the CLI `analyze` command."""
