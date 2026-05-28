@@ -1,316 +1,219 @@
 {
-  "probed_at": "2026-05-28T14:06:59.996727+00:00",
+  "probed_at": "2026-05-28T14:08:23.783173+00:00",
   "base": "https://www.duellinksmeta.com",
-  "probes": {
-    "recent_60": {
-      "status": 200,
-      "error": null,
-      "elapsed_s": 0.66,
-      "summary": {
-        "count": 60,
-        "rankedType_breakdown": {
-          "King of Games": 43,
-          "?": 16,
-          "Spicy Win Streaks": 1
-        },
-        "deckType_sample": [
-          {
-            "deckType": "Destiny HEROs",
-            "tier": 3,
-            "rankedType": "King of Games",
-            "created": "2026-05-28T13:37:00.647Z",
-            "url": "/king-of-games/may-2026/destiny-heros/tnobes/IrywO/"
-          },
-          {
-            "deckType": "Stardust / Synchron",
-            "tier": 1,
-            "rankedType": "King of Games",
-            "created": "2026-05-28T05:45:00.000Z",
-            "url": "/king-of-games/may-2026/stardust-synchron/nello/VoA06/"
-          },
-          {
-            "deckType": "Destiny HEROs",
-            "tier": 3,
-            "rankedType": "King of Games",
-            "created": "2026-05-28T02:09:21.050Z",
-            "url": "/king-of-games/may-2026/destiny-heros/philmaia/2N4yj/"
-          },
-          {
-            "deckType": "Stardust / Synchron",
-            "tier": 1,
-            "rankedType": "King of Games",
-            "created": "2026-05-28T01:07:55.987Z",
-            "url": "/king-of-games/may-2026/stardust-synchron/vector/WBQI9/"
-          },
-          {
-            "deckType": "Beetrooper",
-            "tier": null,
-            "rankedType": "King of Games",
-            "created": "2026-05-27T20:34:00.000Z",
-            "url": "/king-of-games/may-2026/beetrooper/pandemonium87/AclTB/"
-          },
-          {
-            "deckType": "Elemental HERO: Rush!",
-            "tier": null,
-            "rankedType": "King of Games",
-            "created": "2026-05-27T18:57:00.000Z",
-            "url": "/king-of-games/may-2026/elemental-hero-rush!/-d-anga---sama/6-Pa4/"
-          },
-          {
-            "deckType": "Therion",
-            "tier": 3,
-            "rankedType": "King of Games",
-            "created": "2026-05-27T18:48:00.000Z",
-            "url": "/king-of-games/may-2026/therion/superxtroll/3ki3e/"
-          },
-          {
-            "deckType": "Shark",
-            "tier": null,
-            "rankedType": "?",
-            "created": "2026-05-27T17:38:54.869Z",
-            "url": "/community-tournaments/jtvcup-speed/9/shark/kuzan/f6tC_/"
-          }
-        ]
-      }
+  "top_level_keys_kog": [
+    "_id",
+    "author",
+    "created",
+    "deckType",
+    "dollarsPrice",
+    "engines",
+    "extra",
+    "gemsPrice",
+    "linkedArticle",
+    "main",
+    "rankedType",
+    "rush",
+    "side",
+    "sideSkills",
+    "skill",
+    "url"
+  ],
+  "top_level_keys_non_kog": [
+    "_id",
+    "author",
+    "created",
+    "customTournamentName",
+    "deckType",
+    "dollarsPrice",
+    "engines",
+    "extra",
+    "gemsPrice",
+    "linkedArticle",
+    "main",
+    "rush",
+    "side",
+    "sideSkills",
+    "skill",
+    "tournamentNumber",
+    "tournamentPlacement",
+    "tournamentType",
+    "url"
+  ],
+  "non_kog_count_in_60": 17,
+  "non_kog_samples": [
+    {
+      "_id": "6a172c8a7433274d866faffc",
+      "author": {
+        "_id": "6324c89bf5a17822f2bebda2",
+        "roles": [],
+        "username": "Kuzan"
+      },
+      "created": "2026-05-27T17:38:54.869Z",
+      "skill": {
+        "_id": "697d941302868dd52741c177",
+        "name": "Barian Battlemorph! Leader of the Seven",
+        "archive": false
+      },
+      "main": "<13 cards>",
+      "extra": "<9 cards>",
+      "side": "<0 cards>",
+      "sideSkills": [],
+      "url": "/community-tournaments/jtvcup-speed/9/shark/kuzan/f6tC_/",
+      "deckType": {
+        "name": "Shark",
+        "tier": null
+      },
+      "tournamentType": {
+        "name": "Community Tournaments",
+        "shortName": "Community Tournaments",
+        "icon": "/img/tournaments/logos/community-tournaments-logo.webp",
+        "enumSuffix": "#",
+        "statsWeight": 20
+      },
+      "tournamentPlacement": "Top 4",
+      "tournamentNumber": "9",
+      "customTournamentName": "JTVCUP Speed",
+      "engines": [],
+      "gemsPrice": 37500,
+      "dollarsPrice": 0,
+      "linkedArticle": {
+        "_id": "6a172c6b86b45c64ffd41513",
+        "title": "JTVCUP Speed #9",
+        "url": "/tournaments/jtvcup-speed/9/report/"
+      },
+      "rush": false
     },
-    "tournament_filters": {
-      "sort=-created&limit=20&tournament=true": {
-        "status": 200,
-        "error": null,
-        "summary": {
-          "count": 20,
-          "rankedType_breakdown": {
-            "?": 12,
-            "King of Games": 8
-          },
-          "deckType_sample": [
-            {
-              "deckType": "Destiny HEROs",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T13:37:00.647Z",
-              "url": "/king-of-games/may-2026/destiny-heros/tnobes/IrywO/"
-            },
-            {
-              "deckType": "Stardust / Synchron",
-              "tier": 1,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T05:45:00.000Z",
-              "url": "/king-of-games/may-2026/stardust-synchron/nello/VoA06/"
-            },
-            {
-              "deckType": "Destiny HEROs",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T02:09:21.050Z",
-              "url": "/king-of-games/may-2026/destiny-heros/philmaia/2N4yj/"
-            },
-            {
-              "deckType": "Stardust / Synchron",
-              "tier": 1,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T01:07:55.987Z",
-              "url": "/king-of-games/may-2026/stardust-synchron/vector/WBQI9/"
-            },
-            {
-              "deckType": "Beetrooper",
-              "tier": null,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T20:34:00.000Z",
-              "url": "/king-of-games/may-2026/beetrooper/pandemonium87/AclTB/"
-            },
-            {
-              "deckType": "Elemental HERO: Rush!",
-              "tier": null,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T18:57:00.000Z",
-              "url": "/king-of-games/may-2026/elemental-hero-rush!/-d-anga---sama/6-Pa4/"
-            },
-            {
-              "deckType": "Therion",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T18:48:00.000Z",
-              "url": "/king-of-games/may-2026/therion/superxtroll/3ki3e/"
-            },
-            {
-              "deckType": "Shark",
-              "tier": null,
-              "rankedType": "?",
-              "created": "2026-05-27T17:38:54.869Z",
-              "url": "/community-tournaments/jtvcup-speed/9/shark/kuzan/f6tC_/"
-            }
-          ]
-        }
+    {
+      "_id": "6a172c8a7433274d866faffb",
+      "author": {
+        "_id": "63135155e50fca5b0ee467b7",
+        "roles": [],
+        "username": "Broly ⑦ 💎"
       },
-      "sort=-created&limit=20&tournaments=true": {
-        "status": 200,
-        "error": null,
-        "summary": {
-          "count": 20,
-          "rankedType_breakdown": {
-            "?": 12,
-            "King of Games": 8
-          },
-          "deckType_sample": [
-            {
-              "deckType": "Destiny HEROs",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T13:37:00.647Z",
-              "url": "/king-of-games/may-2026/destiny-heros/tnobes/IrywO/"
-            },
-            {
-              "deckType": "Stardust / Synchron",
-              "tier": 1,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T05:45:00.000Z",
-              "url": "/king-of-games/may-2026/stardust-synchron/nello/VoA06/"
-            },
-            {
-              "deckType": "Destiny HEROs",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T02:09:21.050Z",
-              "url": "/king-of-games/may-2026/destiny-heros/philmaia/2N4yj/"
-            },
-            {
-              "deckType": "Stardust / Synchron",
-              "tier": 1,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T01:07:55.987Z",
-              "url": "/king-of-games/may-2026/stardust-synchron/vector/WBQI9/"
-            },
-            {
-              "deckType": "Beetrooper",
-              "tier": null,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T20:34:00.000Z",
-              "url": "/king-of-games/may-2026/beetrooper/pandemonium87/AclTB/"
-            },
-            {
-              "deckType": "Elemental HERO: Rush!",
-              "tier": null,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T18:57:00.000Z",
-              "url": "/king-of-games/may-2026/elemental-hero-rush!/-d-anga---sama/6-Pa4/"
-            },
-            {
-              "deckType": "Therion",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T18:48:00.000Z",
-              "url": "/king-of-games/may-2026/therion/superxtroll/3ki3e/"
-            },
-            {
-              "deckType": "Shark",
-              "tier": null,
-              "rankedType": "?",
-              "created": "2026-05-27T17:38:54.869Z",
-              "url": "/community-tournaments/jtvcup-speed/9/shark/kuzan/f6tC_/"
-            }
-          ]
-        }
+      "created": "2026-05-27T17:38:51.020Z",
+      "skill": {
+        "_id": "69ca28b7fdebf0c4e1e41505",
+        "name": "The Power of D: Weaving the Future",
+        "archive": false
       },
-      "sort=-created&limit=20&rankedType=Tournament": {
-        "status": 400,
-        "error": "HTTPError 400 Bad Request",
-        "summary": null
+      "main": "<20 cards>",
+      "extra": "<8 cards>",
+      "side": "<0 cards>",
+      "sideSkills": [],
+      "url": "/community-tournaments/jtvcup-speed/9/destiny-heros/broly-⑦-💎/0PmmS/",
+      "deckType": {
+        "name": "Destiny HEROs",
+        "tier": 3
       },
-      "sort=-created&limit=20&kog=false": {
-        "status": 200,
-        "error": null,
-        "summary": {
-          "count": 20,
-          "rankedType_breakdown": {
-            "?": 12,
-            "King of Games": 8
-          },
-          "deckType_sample": [
-            {
-              "deckType": "Destiny HEROs",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T13:37:00.647Z",
-              "url": "/king-of-games/may-2026/destiny-heros/tnobes/IrywO/"
-            },
-            {
-              "deckType": "Stardust / Synchron",
-              "tier": 1,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T05:45:00.000Z",
-              "url": "/king-of-games/may-2026/stardust-synchron/nello/VoA06/"
-            },
-            {
-              "deckType": "Destiny HEROs",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T02:09:21.050Z",
-              "url": "/king-of-games/may-2026/destiny-heros/philmaia/2N4yj/"
-            },
-            {
-              "deckType": "Stardust / Synchron",
-              "tier": 1,
-              "rankedType": "King of Games",
-              "created": "2026-05-28T01:07:55.987Z",
-              "url": "/king-of-games/may-2026/stardust-synchron/vector/WBQI9/"
-            },
-            {
-              "deckType": "Beetrooper",
-              "tier": null,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T20:34:00.000Z",
-              "url": "/king-of-games/may-2026/beetrooper/pandemonium87/AclTB/"
-            },
-            {
-              "deckType": "Elemental HERO: Rush!",
-              "tier": null,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T18:57:00.000Z",
-              "url": "/king-of-games/may-2026/elemental-hero-rush!/-d-anga---sama/6-Pa4/"
-            },
-            {
-              "deckType": "Therion",
-              "tier": 3,
-              "rankedType": "King of Games",
-              "created": "2026-05-27T18:48:00.000Z",
-              "url": "/king-of-games/may-2026/therion/superxtroll/3ki3e/"
-            },
-            {
-              "deckType": "Shark",
-              "tier": null,
-              "rankedType": "?",
-              "created": "2026-05-27T17:38:54.869Z",
-              "url": "/community-tournaments/jtvcup-speed/9/shark/kuzan/f6tC_/"
-            }
-          ]
-        }
-      }
+      "tournamentType": {
+        "name": "Community Tournaments",
+        "shortName": "Community Tournaments",
+        "icon": "/img/tournaments/logos/community-tournaments-logo.webp",
+        "enumSuffix": "#",
+        "statsWeight": 20
+      },
+      "tournamentPlacement": "Top 4",
+      "tournamentNumber": "9",
+      "customTournamentName": "JTVCUP Speed",
+      "engines": [],
+      "gemsPrice": 58000,
+      "dollarsPrice": 143,
+      "linkedArticle": {
+        "_id": "6a172c6b86b45c64ffd41513",
+        "title": "JTVCUP Speed #9",
+        "url": "/tournaments/jtvcup-speed/9/report/"
+      },
+      "rush": false
     },
-    "pagination": {
-      "page0_ids": [
-        "6a1845192c82761975b97ea6",
-        "6a17c7a74be34eb1ca979562",
-        "6a17a3dff8f2d69d8cbca6d3",
-        "6a17958b72a4a988f2eab361",
-        "6a174718f4c35fba1363f9dc"
-      ],
-      "from5_ids": [
-        "6a1845192c82761975b97ea6",
-        "6a17c7a74be34eb1ca979562",
-        "6a17a3dff8f2d69d8cbca6d3",
-        "6a17958b72a4a988f2eab361",
-        "6a174718f4c35fba1363f9dc"
-      ],
-      "page2_ids": [
-        "6a173052f4c35fba1363d0b5",
-        "6a172e5786b45c64ffd4188f",
-        "6a172c8a7433274d866faffc",
-        "6a172c8a7433274d866faffb",
-        "6a172c8a7433274d866faffa"
-      ],
-      "from5_differs": false,
-      "page2_differs": true
+    {
+      "_id": "6a172c8a7433274d866faffa",
+      "author": {
+        "_id": "67d86b8cf855667ca2baf474",
+        "roles": [],
+        "username": "Luminèbre"
+      },
+      "created": "2026-05-27T17:38:43.630Z",
+      "skill": {
+        "_id": "69f064480612db08970dfaf9",
+        "name": "Whispers of Good and Evil",
+        "archive": true
+      },
+      "main": "<13 cards>",
+      "extra": "<7 cards>",
+      "side": "<0 cards>",
+      "sideSkills": [],
+      "url": "/community-tournaments/jtvcup-speed/9/vaalmonica/luminèbre/t6pbj/",
+      "deckType": {
+        "name": "Vaalmonica",
+        "tier": 3
+      },
+      "tournamentType": {
+        "name": "Community Tournaments",
+        "shortName": "Community Tournaments",
+        "icon": "/img/tournaments/logos/community-tournaments-logo.webp",
+        "enumSuffix": "#",
+        "statsWeight": 20
+      },
+      "tournamentPlacement": "2nd Place",
+      "tournamentNumber": "9",
+      "customTournamentName": "JTVCUP Speed",
+      "engines": [],
+      "gemsPrice": 39500,
+      "dollarsPrice": 0,
+      "linkedArticle": {
+        "_id": "6a172c6b86b45c64ffd41513",
+        "title": "JTVCUP Speed #9",
+        "url": "/tournaments/jtvcup-speed/9/report/"
+      },
+      "rush": false
+    },
+    {
+      "_id": "6a172c8a7433274d866faff9",
+      "author": {
+        "_id": "61fd8ea111cdb05bdd235ddf",
+        "roles": [],
+        "username": "Silva"
+      },
+      "created": "2026-05-27T17:38:38.942Z",
+      "skill": {
+        "_id": "6a0c310562086aedbf08e08b",
+        "name": "Bonds of the Converging Stars",
+        "archive": false
+      },
+      "main": "<14 cards>",
+      "extra": "<9 cards>",
+      "side": "<0 cards>",
+      "sideSkills": [],
+      "url": "/community-tournaments/jtvcup-speed/9/stardust-synchron/silva/WTRWp/",
+      "deckType": {
+        "name": "Stardust / Synchron",
+        "tier": 1
+      },
+      "tournamentType": {
+        "name": "Community Tournaments",
+        "shortName": "Community Tournaments",
+        "icon": "/img/tournaments/logos/community-tournaments-logo.webp",
+        "enumSuffix": "#",
+        "statsWeight": 20
+      },
+      "tournamentPlacement": "1st Place",
+      "tournamentNumber": "9",
+      "customTournamentName": "JTVCUP Speed",
+      "engines": [],
+      "gemsPrice": 47000,
+      "dollarsPrice": 4,
+      "linkedArticle": {
+        "_id": "6a172c6b86b45c64ffd41513",
+        "title": "JTVCUP Speed #9",
+        "url": "/tournaments/jtvcup-speed/9/report/"
+      },
+      "rush": false
     }
+  ],
+  "url_prefix_breakdown": {
+    "/king-of-games": 43,
+    "/community-tournaments": 16,
+    "/spicy-win-streaks": 1
   }
 }
