@@ -1,5 +1,5 @@
 {
-  "probed_at": "2026-05-28T14:08:23.783173+00:00",
+  "probed_at": "2026-05-28T22:35:05.670559+00:00",
   "base": "https://www.duellinksmeta.com",
   "top_level_keys_kog": [
     "_id",
@@ -10,6 +10,8 @@
     "engines",
     "extra",
     "gemsPrice",
+    "hasNotes",
+    "hasReplays",
     "linkedArticle",
     "main",
     "rankedType",
@@ -31,7 +33,6 @@
     "gemsPrice",
     "linkedArticle",
     "main",
-    "rush",
     "side",
     "sideSkills",
     "skill",
@@ -40,71 +41,25 @@
     "tournamentType",
     "url"
   ],
-  "non_kog_count_in_60": 17,
+  "non_kog_count_in_60": 21,
   "non_kog_samples": [
     {
-      "_id": "6a172c8a7433274d866faffc",
-      "author": {
-        "_id": "6324c89bf5a17822f2bebda2",
-        "roles": [],
-        "username": "Kuzan"
-      },
-      "created": "2026-05-27T17:38:54.869Z",
+      "_id": "6a18971a80b3da0cbab30d6b",
+      "author": "Hakai ",
+      "created": "2026-05-28T19:26:53.300Z",
       "skill": {
-        "_id": "697d941302868dd52741c177",
-        "name": "Barian Battlemorph! Leader of the Seven",
+        "_id": "6a0c31a23c27aa49cebe6e1b",
+        "name": "Invincible Crimson Star",
         "archive": false
       },
-      "main": "<13 cards>",
-      "extra": "<9 cards>",
-      "side": "<0 cards>",
-      "sideSkills": [],
-      "url": "/community-tournaments/jtvcup-speed/9/shark/kuzan/f6tC_/",
-      "deckType": {
-        "name": "Shark",
-        "tier": null
-      },
-      "tournamentType": {
-        "name": "Community Tournaments",
-        "shortName": "Community Tournaments",
-        "icon": "/img/tournaments/logos/community-tournaments-logo.webp",
-        "enumSuffix": "#",
-        "statsWeight": 20
-      },
-      "tournamentPlacement": "Top 4",
-      "tournamentNumber": "9",
-      "customTournamentName": "JTVCUP Speed",
-      "engines": [],
-      "gemsPrice": 37500,
-      "dollarsPrice": 0,
-      "linkedArticle": {
-        "_id": "6a172c6b86b45c64ffd41513",
-        "title": "JTVCUP Speed #9",
-        "url": "/tournaments/jtvcup-speed/9/report/"
-      },
-      "rush": false
-    },
-    {
-      "_id": "6a172c8a7433274d866faffb",
-      "author": {
-        "_id": "63135155e50fca5b0ee467b7",
-        "roles": [],
-        "username": "Broly ⑦ 💎"
-      },
-      "created": "2026-05-27T17:38:51.020Z",
-      "skill": {
-        "_id": "69ca28b7fdebf0c4e1e41505",
-        "name": "The Power of D: Weaving the Future",
-        "archive": false
-      },
-      "main": "<20 cards>",
+      "main": "<15 cards>",
       "extra": "<8 cards>",
       "side": "<0 cards>",
       "sideSkills": [],
-      "url": "/community-tournaments/jtvcup-speed/9/destiny-heros/broly-⑦-💎/0PmmS/",
+      "url": "/community-tournaments/suisen-weekly/203/resonators/hakai-/3HHqk/",
       "deckType": {
-        "name": "Destiny HEROs",
-        "tier": 3
+        "tier": 3,
+        "name": "Resonators"
       },
       "tournamentType": {
         "name": "Community Tournaments",
@@ -113,40 +68,39 @@
         "enumSuffix": "#",
         "statsWeight": 20
       },
-      "tournamentPlacement": "Top 4",
-      "tournamentNumber": "9",
-      "customTournamentName": "JTVCUP Speed",
+      "tournamentPlacement": "1st Place",
+      "tournamentNumber": "203",
+      "customTournamentName": "Suisen Weekly",
       "engines": [],
-      "gemsPrice": 58000,
+      "gemsPrice": 67500,
       "dollarsPrice": 143,
       "linkedArticle": {
-        "_id": "6a172c6b86b45c64ffd41513",
-        "title": "JTVCUP Speed #9",
-        "url": "/tournaments/jtvcup-speed/9/report/"
-      },
-      "rush": false
+        "_id": "6a1896dc4c9f06e17063345d",
+        "title": "Suisen Weekly #203",
+        "url": "/tournaments/suisen-weekly/203/report/"
+      }
     },
     {
-      "_id": "6a172c8a7433274d866faffa",
+      "_id": "6a18971a80b3da0cbab30d6c",
       "author": {
-        "_id": "67d86b8cf855667ca2baf474",
+        "_id": "66d46435a08d8582f5f5f8c4",
         "roles": [],
-        "username": "Luminèbre"
+        "username": "Y,H"
       },
-      "created": "2026-05-27T17:38:43.630Z",
+      "created": "2026-05-28T19:26:51.717Z",
       "skill": {
-        "_id": "69f064480612db08970dfaf9",
-        "name": "Whispers of Good and Evil",
-        "archive": true
+        "_id": "6a0c31a23c27aa49cebe6e1b",
+        "name": "Invincible Crimson Star",
+        "archive": false
       },
-      "main": "<13 cards>",
-      "extra": "<7 cards>",
+      "main": "<16 cards>",
+      "extra": "<9 cards>",
       "side": "<0 cards>",
       "sideSkills": [],
-      "url": "/community-tournaments/jtvcup-speed/9/vaalmonica/luminèbre/t6pbj/",
+      "url": "/community-tournaments/suisen-weekly/203/resonators/yh/2HtyM/",
       "deckType": {
-        "name": "Vaalmonica",
-        "tier": 3
+        "tier": 3,
+        "name": "Resonators"
       },
       "tournamentType": {
         "name": "Community Tournaments",
@@ -156,36 +110,68 @@
         "statsWeight": 20
       },
       "tournamentPlacement": "2nd Place",
-      "tournamentNumber": "9",
-      "customTournamentName": "JTVCUP Speed",
+      "tournamentNumber": "203",
+      "customTournamentName": "Suisen Weekly",
       "engines": [],
-      "gemsPrice": 39500,
-      "dollarsPrice": 0,
+      "gemsPrice": 61000,
+      "dollarsPrice": 143,
       "linkedArticle": {
-        "_id": "6a172c6b86b45c64ffd41513",
-        "title": "JTVCUP Speed #9",
-        "url": "/tournaments/jtvcup-speed/9/report/"
-      },
-      "rush": false
+        "_id": "6a1896dc4c9f06e17063345d",
+        "title": "Suisen Weekly #203",
+        "url": "/tournaments/suisen-weekly/203/report/"
+      }
     },
     {
-      "_id": "6a172c8a7433274d866faff9",
-      "author": {
-        "_id": "61fd8ea111cdb05bdd235ddf",
-        "roles": [],
-        "username": "Silva"
+      "_id": "6a18971a80b3da0cbab30d6d",
+      "author": "Help_Me",
+      "created": "2026-05-28T19:26:50.294Z",
+      "skill": {
+        "_id": "69ca28d386b3c8c7d5f76c5f",
+        "name": "Therion Battle Royale",
+        "archive": true
       },
-      "created": "2026-05-27T17:38:38.942Z",
+      "main": "<17 cards>",
+      "extra": "<9 cards>",
+      "side": "<0 cards>",
+      "sideSkills": [],
+      "url": "/community-tournaments/suisen-weekly/203/therion/help_me/CBDxD/",
+      "deckType": {
+        "name": "Therion",
+        "tier": 3
+      },
+      "tournamentType": {
+        "name": "Community Tournaments",
+        "shortName": "Community Tournaments",
+        "icon": "/img/tournaments/logos/community-tournaments-logo.webp",
+        "enumSuffix": "#",
+        "statsWeight": 20
+      },
+      "tournamentPlacement": "Top 4",
+      "tournamentNumber": "203",
+      "customTournamentName": "Suisen Weekly",
+      "engines": [],
+      "gemsPrice": 34000,
+      "dollarsPrice": 71,
+      "linkedArticle": {
+        "_id": "6a1896dc4c9f06e17063345d",
+        "title": "Suisen Weekly #203",
+        "url": "/tournaments/suisen-weekly/203/report/"
+      }
+    },
+    {
+      "_id": "6a18971a80b3da0cbab30d6e",
+      "author": "いかふらわー",
+      "created": "2026-05-28T19:26:48.531Z",
       "skill": {
         "_id": "6a0c310562086aedbf08e08b",
         "name": "Bonds of the Converging Stars",
         "archive": false
       },
       "main": "<14 cards>",
-      "extra": "<9 cards>",
+      "extra": "<8 cards>",
       "side": "<0 cards>",
       "sideSkills": [],
-      "url": "/community-tournaments/jtvcup-speed/9/stardust-synchron/silva/WTRWp/",
+      "url": "/community-tournaments/suisen-weekly/203/stardust-synchron/いかふらわー/bnG11/",
       "deckType": {
         "name": "Stardust / Synchron",
         "tier": 1
@@ -197,23 +183,21 @@
         "enumSuffix": "#",
         "statsWeight": 20
       },
-      "tournamentPlacement": "1st Place",
-      "tournamentNumber": "9",
-      "customTournamentName": "JTVCUP Speed",
+      "tournamentPlacement": "Top 4",
+      "tournamentNumber": "203",
+      "customTournamentName": "Suisen Weekly",
       "engines": [],
-      "gemsPrice": 47000,
-      "dollarsPrice": 4,
+      "gemsPrice": 39000,
+      "dollarsPrice": 11,
       "linkedArticle": {
-        "_id": "6a172c6b86b45c64ffd41513",
-        "title": "JTVCUP Speed #9",
-        "url": "/tournaments/jtvcup-speed/9/report/"
-      },
-      "rush": false
+        "_id": "6a1896dc4c9f06e17063345d",
+        "title": "Suisen Weekly #203",
+        "url": "/tournaments/suisen-weekly/203/report/"
+      }
     }
   ],
   "url_prefix_breakdown": {
-    "/king-of-games": 43,
-    "/community-tournaments": 16,
-    "/spicy-win-streaks": 1
+    "/community-tournaments": 21,
+    "/king-of-games": 39
   }
 }
