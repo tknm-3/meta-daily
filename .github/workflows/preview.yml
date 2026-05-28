@@ -13,6 +13,8 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - main
+      - claude/duellinks-tournament-bot-LV24s
       - claude/tournament-decks-meta-cards-DhBfA
     paths:
       - 'src/**'
