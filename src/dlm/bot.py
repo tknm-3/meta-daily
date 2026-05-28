@@ -1,10 +1,11 @@
 """Entry point: fetch DLM top decks, notify Discord about new tournament
 placings, and surface per-archetype / generic-staple analysis.
 
-Run modes (configure via env, see README / workflow):
+Run modes:
   python -m dlm.bot run                 # cron flow: detect new placings, notify
   python -m dlm.bot analyze "<arch>"    # print an archetype's card breakdown
   python -m dlm.bot staples             # print environment-wide generic staples
+  python -m dlm.bot preview             # dump live preview.json (no Discord)
 
 Env:
   DISCORD_WEBHOOK_URL   target webhook (unset -> dry-run, prints instead)
@@ -12,7 +13,6 @@ Env:
   DLM_INCLUDE_KOG       "1" to also notify King of Games decks (default: off)
   DLM_CORPUS_PAGES      pages of 50 to pull for the analysis corpus (default 6)
   DLM_PER_PAGE          page size (default 50)
-  DLM_MAX_NOTIFY        cap embeds per run to avoid spam (default 10)
 """
 from __future__ import annotations
 
@@ -85,13 +85,25 @@ def _resolve_archetype(groups: dict[str, list[Deck]], query: str) -> str | None:
     return None
 
 
+def _group_by_tournament(decks: list[Deck]) -> list[tuple[str, list[Deck]]]:
+    """Return (label, deck_list) pairs, one per tournament, oldest-first."""
+    seen: dict[str, list[Deck]] = {}
+    order: list[str] = []
+    for deck in decks:
+        key = deck.tournament_name or deck.ranked_label or "Other"
+        if key not in seen:
+            seen[key] = []
+            order.append(key)
+        seen[key].append(deck)
+    return [(k, seen[k]) for k in order]
+
+
 def cmd_run(_: argparse.Namespace) -> int:
     webhook = os.environ.get("DISCORD_WEBHOOK_URL")
     username = os.environ.get("DISCORD_USERNAME") or "DLM Tournament Tracker"
     include_kog = _flag("DLM_INCLUDE_KOG")
     pages = _env_int("DLM_CORPUS_PAGES", 6)
     per_page = _env_int("DLM_PER_PAGE", 50)
-    max_notify = _env_int("DLM_MAX_NOTIFY", 10)
 
     decks = fetch_corpus(pages, per_page)
     if not decks:
@@ -118,26 +130,30 @@ def cmd_run(_: argparse.Namespace) -> int:
         (d for d in candidates if not store.has(d.id)),
         key=lambda d: d.created or _MIN_DT,
     )
-    if len(new) > max_notify:
-        new = new[-max_notify:]
 
     print(
         f"Fetched {len(decks)} decks; {len(candidates)} candidates "
         f"({'tournament+kog' if include_kog else 'tournament'}); {len(new)} new."
     )
 
-    embeds = [
-        deck_embed(d, archetype_report(groups.get(d.archetype, [])), staples_in_deck(d, staples))
-        for d in new
-    ]
-    if embeds:
+    # Group by tournament so each event appears as one Discord message.
+    posted = 0
+    for label, event_decks in _group_by_tournament(new):
+        embeds = [
+            deck_embed(d, archetype_report(groups.get(d.archetype, [])), staples_in_deck(d, staples))
+            for d in event_decks
+        ]
+        content = f"**{label}** — {len(embeds)}件の入賞構築"
         if webhook:
-            send_embeds(webhook, embeds, username=username)
-            print(f"Posted {len(embeds)} embed(s) to Discord.")
+            send_embeds(webhook, embeds, content=content, username=username)
         else:
-            print("DISCORD_WEBHOOK_URL not set; dry-run, would post:")
-            for d in new:
-                print(f"  - {d.archetype} | {d.placement} @ {d.tournament_name} ({d.id})")
+            print(f"[dry-run] {content}")
+            for d in event_decks:
+                print(f"  {d.placement:<12} {d.archetype}")
+        posted += len(embeds)
+
+    if posted and webhook:
+        print(f"Posted {posted} embed(s) to Discord.")
 
     store.add_many(all_ids)
     store.save()
