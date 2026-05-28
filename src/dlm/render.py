@@ -137,7 +137,7 @@ def digest_embeds(digest: Digest) -> list[dict]:
 
 def digest_content(digest: Digest) -> str:
     """Short message text shown above the embeds (mobile push preview)."""
-    return f"📊 直近{digest.window_days}日間のDuel Links環境まとめ"
+    return f"📊 直近{digest.window_days}日間のDuel Links大会入賞まとめ"
 
 
 # --------------------------------------------------------------------------- #
