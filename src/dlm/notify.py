@@ -14,11 +14,19 @@ class DiscordError(RuntimeError):
     pass
 
 
+_HEADERS = {
+    "Content-Type": "application/json",
+    # Discord's Cloudflare blocks Python-urllib's default UA; use the standard
+    # Discord bot UA format to pass bot-detection.
+    "User-Agent": "DiscordBot (https://github.com/tknm-3/meta-daily, 1.0)",
+}
+
+
 def _post(webhook_url: str, payload: dict, *, retries: int = 4) -> None:
     data = json.dumps(payload).encode("utf-8")
     for attempt in range(retries):
         req = request.Request(
-            webhook_url, data=data, headers={"Content-Type": "application/json"}, method="POST"
+            webhook_url, data=data, headers=_HEADERS, method="POST"
         )
         try:
             with request.urlopen(req, timeout=30):
