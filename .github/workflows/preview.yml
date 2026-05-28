@@ -1,14 +1,14 @@
 name: DLM Preview
 
-# Inspect what the bot would post, against live data, without touching Discord
-# or the seen-state. Auto-runs on src changes (this branch) and commits
-# data/preview.json so the rendered output can be reviewed.
+# Inspect what the bot would post (the meta digest), against live data, without
+# touching Discord. Auto-runs on src changes on this branch and commits
+# data/preview.json so the rendered output (and image URLs) can be reviewed.
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - claude/duellinks-tournament-bot-LV24s
+      - main
     paths:
       - 'src/**'
       - '.github/workflows/preview.yml'
@@ -27,7 +27,7 @@ jobs:
           python-version: '3.12'
 
       - name: Build live preview
-        run: PYTHONPATH=src python -m dlm.bot preview --limit 6
+        run: PYTHONPATH=src python -m dlm.bot preview
 
       - name: Commit preview
         run: |
