@@ -2,8 +2,10 @@
 """Offline self-test for the meta-digest pipeline.
 
 No network: builds a synthetic corpus spanning two windows and asserts that
-trend computation and embed rendering behave (winning-deck ranking, rising/new
-detection, image URLs, Discord size limits). Run: PYTHONPATH=src python scripts/selftest.py
+trend computation and embed rendering behave (winning-deck ranking, tournament-
+only staple detection, image URLs, Discord size limits). The corpus also mixes
+in KoG/ladder decks to prove they're *excluded* from the digest.
+Run: PYTHONPATH=src python scripts/selftest.py
 """
 from __future__ import annotations
 
@@ -95,11 +97,20 @@ def main() -> int:
     # Traptrix won a lot last window, little this window -> down.
     check(winners["Traptrix"].trend == "down", f"Traptrix should be down, got {winners['Traptrix'].trend}")
 
-    # --- staples ---
+    # --- tournament-only scope: ladder/KoG decks are counted but excluded ---
+    check(digest.tournament_decks == 7, f"expected 7 placement decks, got {digest.tournament_decks}")
+    check(digest.total_decks > digest.tournament_decks,
+          "corpus should include excluded ladder/KoG decks too")
+
+    # --- staples (from placement builds only) ---
     names = [s.staple.name for s in digest.staples]
     check("Forbidden Droplet" in names, "Forbidden Droplet should be a staple")
     lead = next(s for s in digest.staples if s.staple.card_id)
     check(lead.staple.card_id.startswith("cid_"), "staple should carry a card_id for art")
+    # Branded only ever appears as a KoG deck -> it must not leak into the spread.
+    droplet = next(s for s in digest.staples if s.staple.name == "Forbidden Droplet")
+    check("Branded" not in droplet.staple.archetypes,
+          "KoG-only archetype (Branded) must not appear in staple spread")
 
     # --- headline icon resolved from payload ---
     check(digest.headline_icon == ICON, "headline icon should come from tournament payload")

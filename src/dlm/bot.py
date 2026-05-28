@@ -1,7 +1,7 @@
 """Entry point: fetch DLM top decks and post a glanceable *meta digest* to
-Discord — winning deck types, rising archetypes, and trending generic staples
-over a rolling window — instead of dumping full decklists (those live on the
-site, which the digest links to).
+Discord — winning deck types and trending generic staples, drawn solely from
+tournament placement builds (大会の入賞構築) over a rolling window — instead of
+dumping full decklists (those live on the site, which the digest links to).
 
 Run modes:
   python -m dlm.bot digest               # build the digest and post to Discord
@@ -26,7 +26,7 @@ from pathlib import Path
 
 from . import client
 from .analyze import archetype_report, generic_staples, group_by_archetype
-from .models import Deck, parse_decks
+from .models import TOURNAMENT, Deck, parse_decks
 from .notify import send_embeds
 from .render import (
     archetype_report_text,
@@ -34,7 +34,7 @@ from .render import (
     digest_embeds,
     generic_staples_text,
 )
-from .trends import build_digest
+from .trends import _STAPLE_MIN_ARCH_SIZE, _STAPLE_MIN_ARCHETYPES, build_digest
 
 
 def _env_int(name: str, default: int) -> int:
@@ -79,6 +79,21 @@ def _corpus_for_window(window_days: int) -> tuple[list[Deck], datetime]:
     until = now - timedelta(days=2 * window_days + 1)
     decks = fetch_corpus(max_pages=max_pages, per_page=per_page, until=until)
     return decks, now
+
+
+def _tournament_only(decks: list[Deck]) -> list[Deck]:
+    """Restrict a corpus to tournament placement builds (大会の入賞構築)."""
+    return [d for d in decks if d.category == TOURNAMENT]
+
+
+def _staples(decks: list[Deck]):
+    """Generic staples over the placement corpus, using the digest's relaxed
+    spread/size thresholds (placements are a smaller sample than the ladder)."""
+    return generic_staples(
+        decks,
+        min_archetypes=_STAPLE_MIN_ARCHETYPES,
+        min_arch_size=_STAPLE_MIN_ARCH_SIZE,
+    )
 
 
 def _resolve_archetype(groups: dict[str, list[Deck]], query: str) -> str | None:
@@ -135,8 +150,9 @@ def cmd_digest(_: argparse.Namespace) -> int:
 def cmd_analyze(args: argparse.Namespace) -> int:
     window_days = _env_int("DLM_WINDOW_DAYS", 5)
     decks, _ = _corpus_for_window(window_days)
+    decks = _tournament_only(decks)
     groups = group_by_archetype(decks)
-    staples = generic_staples(decks)
+    staples = _staples(decks)
     name = _resolve_archetype(groups, args.archetype)
     if not name:
         print("該当アーキタイプなし。候補:")
@@ -151,7 +167,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
 def cmd_staples(args: argparse.Namespace) -> int:
     window_days = _env_int("DLM_WINDOW_DAYS", 5)
     decks, _ = _corpus_for_window(window_days)
-    staples = generic_staples(decks)
+    staples = _staples(_tournament_only(decks))
     print(generic_staples_text(staples, limit=args.limit))
     return 0
 

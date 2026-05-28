@@ -1,9 +1,10 @@
 """Format analysis into Discord webhook embeds / text.
 
 The headline output is the *meta digest* (see trends.py): a compact, glanceable
-embed pair — winning deck types + rising archetypes, and trending generic
-staples with card art — rather than full decklists. Detailed lists live on
-duellinksmeta.com, which every digest links to.
+embed pair — winning deck types and trending generic staples with card art,
+both drawn solely from tournament placement builds (大会の入賞構築) — rather
+than full decklists. Detailed lists live on duellinksmeta.com, which every
+digest links to.
 
 Discord limits respected: embed title <=256, description <=4096, field value
 <=1024, <=25 fields, <=10 embeds per message.
@@ -13,7 +14,7 @@ from __future__ import annotations
 from .analyze import ArchetypeReport, GenericStaple
 from .assets import card_image_url, site_asset_url
 from .client import BASE
-from .trends import ArchetypeTrend, Digest, StapleTrend, WinningDeck
+from .trends import Digest, StapleTrend, WinningDeck
 
 FIELD_LIMIT = 1024
 
@@ -67,12 +68,6 @@ def _winning_line(w: WinningDeck) -> str:
     return f"**{w.archetype}** — {body} {arrow}".rstrip()
 
 
-def _archetype_line(t: ArchetypeTrend) -> str:
-    delta = t.count - t.prev_count
-    sign = f"+{delta}" if delta > 0 else str(delta)
-    return f"{_arrow(t.trend)} **{t.archetype}** {t.count}件 ({_pct(t.share)}・前比{sign})"
-
-
 def _staple_line(s: StapleTrend) -> str:
     g = s.staple
     rarity = f" [{g.rarity}]" if g.rarity else ""
@@ -82,17 +77,16 @@ def _staple_line(s: StapleTrend) -> str:
 def summary_embed(
     digest: Digest,
     *,
-    top_winners: int = 8,
-    top_archetypes: int = 6,
+    top_winners: int = 10,
 ) -> dict:
     span = f"{digest.window_start:%m/%d} 〜 {digest.generated_at:%m/%d}"
     desc = [
-        f"🗓️ **直近{digest.window_days}日間**（{span}）の大会・環境まとめ",
-        f"📦 集計対象 {digest.total_decks} 構築（うち大会 {digest.tournament_decks} 件）",
+        f"🗓️ **直近{digest.window_days}日間**（{span}）の大会入賞構築まとめ",
+        f"🏅 集計対象 大会入賞 {digest.tournament_decks} 件",
         f"🔗 細かいレシピは [DuelLinksMeta の TOP DECKS]({TOP_DECKS_URL}) でチェック",
     ]
     embed: dict = {
-        "title": f"📊 Duel Links 環境まとめ ｜ 直近{digest.window_days}日",
+        "title": f"📊 Duel Links 大会入賞まとめ ｜ 直近{digest.window_days}日",
         "url": TOP_DECKS_URL,
         "color": _GOLD,
         "description": "\n".join(desc)[:4096],
@@ -112,17 +106,6 @@ def summary_embed(
                 "inline": False,
             }
         )
-
-    # Highlight movers: things rising or newly appearing, biggest delta first.
-    movers = [t for t in digest.rising_archetypes if t.trend in ("up", "new") and t.count >= 2]
-    if movers:
-        embed["fields"].append(
-            {
-                "name": "📈 ここ数日で伸びているデッキ",
-                "value": _join_budget([_archetype_line(t) for t in movers[:top_archetypes]]),
-                "inline": False,
-            }
-        )
     return embed
 
 
@@ -131,7 +114,7 @@ def staples_embed(digest: Digest, *, top: int = 12) -> dict | None:
     if not staples:
         return None
     embed: dict = {
-        "title": "🃏 流行りの汎用札（複数デッキで採用）",
+        "title": "🃏 流行りの汎用札（複数の入賞構築で採用）",
         "url": TOP_DECKS_URL,
         "color": _BLUE,
         "description": _join_budget([_staple_line(s) for s in staples], budget=4096),
@@ -180,7 +163,7 @@ def archetype_report_text(report: ArchetypeReport, staples: list[GenericStaple])
 
 
 def generic_staples_text(staples: list[GenericStaple], limit: int = 40) -> str:
-    lines = ["# 環境全体の汎用札 (複数アーカイプで採用)"]
+    lines = ["# 大会入賞構築の汎用札 (複数アーキタイプで採用)"]
     for s in staples[:limit]:
         lines.append(
             f"  {s.name:<34} {s.spread:>2}アーキ  全体{_pct(s.overall_adoption):>4}  [{s.rarity}]"
