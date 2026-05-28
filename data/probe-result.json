@@ -1,0 +1,1040 @@
+{
+  "probed_at": "2026-05-28T14:02:49.338411+00:00",
+  "base": "https://www.duellinksmeta.com",
+  "results": [
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/top-decks?limit=3",
+      "status": 200,
+      "resp_headers": {
+        "content-type": "application/json; charset=utf-8",
+        "server": "cloudflare",
+        "cf-ray": "a02dcc9b6b892016-IAD",
+        "cf-cache-status": "MISS"
+      },
+      "json_summary": {
+        "_type": "list",
+        "_len": 3,
+        "_first": {
+          "_id": "60f099369a483839445c2845",
+          "created": "2017-12-23T00:00:00.000Z",
+          "engines": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "author": "CkM",
+          "skill": {
+            "_id": "60c279f7b629052688d111fd",
+            "name": "Middle Age Mechs"
+          },
+          "main": {
+            "_type": "list",
+            "_len": 10,
+            "_first": {
+              "amount": 2,
+              "card": {
+                "_id": "60c2b3a9a0e24f2d54a514a2",
+                "name": "Ancient Gear Golem",
+                "rarity": "UR"
+              }
+            }
+          },
+          "url": "/king-of-games/december-2017/ancient-gears/dr-veillian-by-ckm/",
+          "deckType": {
+            "name": "Ancient Gear",
+            "tier": null
+          },
+          "sideSkills": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "extra": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "side": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "rankedType": {
+            "name": "King of Games",
+            "shortName": "KoG",
+            "icon": "/img/tournaments/logos/kog.webp",
+            "statsWeight": 10
+          },
+          "dollarsPrice": 0,
+          "gemsPrice": 28000
+        }
+      },
+      "sample_item": {
+        "_id": "60f099369a483839445c2845",
+        "created": "2017-12-23T00:00:00.000Z",
+        "engines": [],
+        "author": "CkM",
+        "skill": {
+          "_id": "60c279f7b629052688d111fd",
+          "name": "Middle Age Mechs"
+        },
+        "main": [
+          {
+            "amount": 2,
+            "card": {
+              "_id": "60c2b3a9a0e24f2d54a514a2",
+              "name": "Ancient Gear Golem",
+              "rarity": "UR"
+            }
+          },
+          {
+            "amount": 3,
+            "card": {
+              "_id": "60c2b3a9a0e24f2d54a514a7",
+              "name": "Ancient Gear Knight",
+              "rarity": "SR"
+            }
+          },
+          {
+            "amount": 1,
+            "card": {
+              "_id": "60c2b3aba0e24f2d54a525bf",
+              "name": "Heavy Knight of the Flame",
+              "rarity": "SR"
+            }
+          },
+          {
+            "amount": 3,
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53554",
+              "name": "Sergeant Electro",
+              "rarity": "SR"
+            }
+          },
+          {
+            "amount": 1,
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a5372f",
+              "name": "Sphere Kuriboh",
+              "rarity": "UR"
+            }
+          },
+          {
+            "amount": 3,
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51fec",
+              "name": "Enemy Controller",
+              "rarity": "SR"
+            }
+          },
+          {
+            "amount": 2,
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a521e5",
+              "name": "Forbidden Chalice",
+              "rarity": "SR"
+            }
+          },
+          {
+            "amount": 1,
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a5387c",
+              "name": "Super Rush Headlong",
+              "rarity": "SR"
+            }
+          },
+          {
+            "amount": 2,
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a5219e",
+              "name": "Floodgate Trap Hole",
+              "rarity": "UR"
+            }
+          },
+          {
+            "amount": 2,
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53202",
+              "name": "Pulse Mines",
+              "rarity": "SR"
+            }
+          }
+        ],
+        "url": "/king-of-games/december-2017/ancient-gears/dr-veillian-by-ckm/",
+        "deckType": {
+          "name": "Ancient Gear",
+          "tier": null
+        },
+        "sideSkills": [],
+        "extra": [],
+        "side": [],
+        "rankedType": {
+          "name": "King of Games",
+          "shortName": "KoG",
+          "icon": "/img/tournaments/logos/kog.webp",
+          "statsWeight": 10
+        },
+        "dollarsPrice": 0,
+        "gemsPrice": 28000
+      },
+      "elapsed_s": 0.38
+    },
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/top-decks?limit=3&sort=-created",
+      "status": 200,
+      "resp_headers": {
+        "content-type": "application/json; charset=utf-8",
+        "server": "cloudflare",
+        "cf-ray": "a02dcc9cdeebe635-IAD",
+        "cf-cache-status": "MISS"
+      },
+      "json_summary": {
+        "_type": "list",
+        "_len": 3,
+        "_first": {
+          "_id": "6a1845192c82761975b97ea6",
+          "author": {
+            "_id": "61133ef481200b00379a71db",
+            "roles": {
+              "_type": "list",
+              "_len": 0,
+              "_first": null
+            },
+            "username": "Tnobes"
+          },
+          "created": "2026-05-28T13:37:00.647Z",
+          "skill": {
+            "_id": "69ca28b7fdebf0c4e1e41505",
+            "name": "The Power of D: Weaving the Future",
+            "archive": false
+          },
+          "main": {
+            "_type": "list",
+            "_len": 20,
+            "_first": {
+              "card": {
+                "_id": "60c2b3aaa0e24f2d54a51d34",
+                "name": "Destiny HERO - Plasma",
+                "rarity": "UR"
+              },
+              "amount": 2
+            }
+          },
+          "extra": {
+            "_type": "list",
+            "_len": 8,
+            "_first": {
+              "card": {
+                "_id": "6126b426f9d784006595dd14",
+                "name": "Destiny HERO - Destroyer Phoenix Enforcer",
+                "rarity": "UR"
+              },
+              "amount": 1
+            }
+          },
+          "side": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "sideSkills": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "url": "/king-of-games/may-2026/destiny-heros/tnobes/IrywO/",
+          "deckType": {
+            "name": "Destiny HEROs",
+            "tier": 3
+          },
+          "rankedType": {
+            "name": "King of Games",
+            "shortName": "KoG",
+            "icon": "/img/tournaments/logos/kog.webp",
+            "statsWeight": 10
+          },
+          "engines": {
+            "_type": "list",
+            "_len": 0,
+            "_first": null
+          },
+          "gemsPrice": 73500,
+          "dollarsPrice": 71,
+          "linkedArticle": null,
+          "rush": false
+        }
+      },
+      "sample_item": {
+        "_id": "6a1845192c82761975b97ea6",
+        "author": {
+          "_id": "61133ef481200b00379a71db",
+          "roles": [],
+          "username": "Tnobes"
+        },
+        "created": "2026-05-28T13:37:00.647Z",
+        "skill": {
+          "_id": "69ca28b7fdebf0c4e1e41505",
+          "name": "The Power of D: Weaving the Future",
+          "archive": false
+        },
+        "main": [
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51d34",
+              "name": "Destiny HERO - Plasma",
+              "rarity": "UR"
+            },
+            "amount": 2
+          },
+          {
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53d30",
+              "name": "Vision HERO Faris",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51faf",
+              "name": "Elemental HERO Stratos",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51d24",
+              "name": "Destiny HERO - Disk Commander",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51f3e",
+              "name": "Effect Veiler",
+              "rarity": "UR"
+            },
+            "amount": 3
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51ed2",
+              "name": "Droll & Lock Bird",
+              "rarity": "UR"
+            },
+            "amount": 2
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51b61",
+              "name": "D.D. Crow",
+              "rarity": "UR"
+            },
+            "amount": 3
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51d2b",
+              "name": "Destiny HERO - Dreadmaster",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51d33",
+              "name": "Destiny HERO - Malicious",
+              "rarity": "SR"
+            },
+            "amount": 3
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51f91",
+              "name": "Elemental HERO Liquid Soldier",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53d32",
+              "name": "Vision HERO Increase",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53d37",
+              "name": "Vision HERO Vyon",
+              "rarity": "R"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "6126b426f9d784006595dd13",
+              "name": "Destiny HERO - Denier",
+              "rarity": "R"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51d2c",
+              "name": "Destiny HERO - Dreamer",
+              "rarity": "R"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a5225f",
+              "name": "Fusion Destiny",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a521e8",
+              "name": "Forbidden Droplet",
+              "rarity": "UR"
+            },
+            "amount": 3
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a52269",
+              "name": "Fusion Substitute",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aba0e24f2d54a52b62",
+              "name": "Mask of Restrict",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51dbc",
+              "name": "Discord",
+              "rarity": "N"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aba0e24f2d54a52acc",
+              "name": "Magistery Alchemist",
+              "rarity": "N"
+            },
+            "amount": 1
+          }
+        ],
+        "extra": [
+          {
+            "card": {
+              "_id": "6126b426f9d784006595dd14",
+              "name": "Destiny HERO - Destroyer Phoenix Enforcer",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aaa0e24f2d54a51d31",
+              "name": "Destiny HERO - Dystopia",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53d2f",
+              "name": "Vision HERO Adoration",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "64b7d9f804c2630a5ed10d3f",
+              "name": "Super Starslayer TY-PHON - Sky Crisis",
+              "rarity": "UR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3aca0e24f2d54a53c69",
+              "name": "Underworld Goddess of the Closed World",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3ada0e24f2d54a53eeb",
+              "name": "Xtra HERO Dread Decimator",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3ada0e24f2d54a53eed",
+              "name": "Xtra HERO Wonder Driver",
+              "rarity": "SR"
+            },
+            "amount": 1
+          },
+          {
+            "card": {
+              "_id": "60c2b3ada0e24f2d54a53eea",
+              "name": "Xtra HERO Cross Crusader",
+              "rarity": "R"
+            },
+            "amount": 2
+          }
+        ],
+        "side": [],
+        "sideSkills": [],
+        "url": "/king-of-games/may-2026/destiny-heros/tnobes/IrywO/",
+        "deckType": {
+          "name": "Destiny HEROs",
+          "tier": 3
+        },
+        "rankedType": {
+          "name": "King of Games",
+          "shortName": "KoG",
+          "icon": "/img/tournaments/logos/kog.webp",
+          "statsWeight": 10
+        },
+        "engines": [],
+        "gemsPrice": 73500,
+        "dollarsPrice": 71,
+        "linkedArticle": null,
+        "rush": false
+      },
+      "elapsed_s": 0.27
+    },
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/tournaments?limit=2",
+      "status": 200,
+      "resp_headers": {
+        "content-type": "application/json; charset=utf-8",
+        "server": "cloudflare",
+        "cf-ray": "a02dcc9e8ae89c1e-IAD",
+        "cf-cache-status": "MISS"
+      },
+      "json_summary": {
+        "_type": "list",
+        "_len": 2,
+        "_first": {
+          "_id": "5f3bb41f3b0d03296d308344",
+          "shortName": "Meta Weekly",
+          "name": "Meta Weekly",
+          "placements": {
+            "_type": "list",
+            "_len": 6,
+            "_first": {
+              "place": "1st Place",
+              "tpcPoints": 12
+            }
+          },
+          "enumSuffix": " #",
+          "streams": {
+            "_type": "list",
+            "_len": 1,
+            "_first": "duellinksmeta"
+          },
+          "bannerImage": "/img/tournaments/banners/Meta Weekly.webp",
+          "icon": "/img/tournaments/logos/Meta Weekly.png",
+          "playerCap": null,
+          "nextDate": "2026-06-01T18:00:00.000Z",
+          "stream": "Synnthara",
+          "statsWeight": 30,
+          "parsedDescription": {
+            "htmlTree": {
+              "_type": "list",
+              "_len": 11,
+              "_first": {
+                "type": "tag",
+                "name": "h5",
+                "voidElement": false,
+                "attrs": {
+                  "id": "about",
+                  "tabindex": "-1"
+                },
+                "children": {
+                  "_type": "list",
+                  "_len": 3,
+                  "_first": {
+                    "type": "<...>",
+                    "name": "<...>",
+                    "voidElement": "<...>",
+                    "attrs": "<...>",
+                    "children": "<...>"
+                  }
+                }
+              }
+            },
+            "customComponents": {}
+          }
+        }
+      },
+      "sample_item": {
+        "_id": "5f3bb41f3b0d03296d308344",
+        "shortName": "Meta Weekly",
+        "name": "Meta Weekly",
+        "placements": [
+          {
+            "place": "1st Place",
+            "tpcPoints": 12
+          },
+          {
+            "place": "2nd Place",
+            "tpcPoints": 8
+          },
+          {
+            "place": "Top 4",
+            "tpcPoints": 5
+          },
+          {
+            "place": "Top 8",
+            "tpcPoints": 3
+          },
+          {
+            "place": "Top 16",
+            "tpcPoints": 1
+          },
+          {
+            "place": "Top 32",
+            "tpcPoints": 0
+          }
+        ],
+        "enumSuffix": " #",
+        "streams": [
+          "duellinksmeta"
+        ],
+        "bannerImage": "/img/tournaments/banners/Meta Weekly.webp",
+        "icon": "/img/tournaments/logos/Meta Weekly.png",
+        "playerCap": null,
+        "nextDate": "2026-06-01T18:00:00.000Z",
+        "stream": "Synnthara",
+        "statsWeight": 30,
+        "parsedDescription": {
+          "htmlTree": [
+            {
+              "type": "tag",
+              "name": "h5",
+              "voidElement": false,
+              "attrs": {
+                "id": "about",
+                "tabindex": "-1"
+              },
+              "children": [
+                {
+                  "type": "tag",
+                  "name": "a",
+                  "voidElement": false,
+                  "attrs": {
+                    "class": "header-anchor",
+                    "href": "#about",
+                    "aria-hidden": "true"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                },
+                {
+                  "type": "tag",
+                  "name": "strong",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "ABOUT"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "tag",
+              "name": "p",
+              "voidElement": false,
+              "attrs": {},
+              "children": [
+                {
+                  "type": "text",
+                  "content": "The Meta Weekly is a tournament that is held once a week,  Monday 2pm EST. There is no player cap, nor is there a deadline to join - you can even join at the very last second!"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "tag",
+              "name": "h5",
+              "voidElement": false,
+              "attrs": {
+                "id": "format",
+                "tabindex": "-1"
+              },
+              "children": [
+                {
+                  "type": "tag",
+                  "name": "a",
+                  "voidElement": false,
+                  "attrs": {
+                    "class": "header-anchor",
+                    "href": "#format",
+                    "aria-hidden": "true"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                },
+                {
+                  "type": "tag",
+                  "name": "strong",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "FORMAT"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "tag",
+              "name": "ul",
+              "voidElement": false,
+              "attrs": {},
+              "children": [
+                {
+                  "type": "text",
+                  "content": "\n"
+                },
+                {
+                  "type": "tag",
+                  "name": "li",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "1 deck + 8-card side deck"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                },
+                {
+                  "type": "tag",
+                  "name": "li",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "Best of 3: Swiss until Top 32"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                },
+                {
+                  "type": "tag",
+                  "name": "li",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "Best of 3: Single elimination in Top 32"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                },
+                {
+                  "type": "tag",
+                  "name": "li",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "Entry fee: 1 Meta Ticket"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "tag",
+              "name": "h5",
+              "voidElement": false,
+              "attrs": {
+                "id": "how-to-join",
+                "tabindex": "-1"
+              },
+              "children": [
+                {
+                  "type": "tag",
+                  "name": "a",
+                  "voidElement": false,
+                  "attrs": {
+                    "class": "header-anchor",
+                    "href": "#how-to-join",
+                    "aria-hidden": "true"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "text",
+                  "content": " "
+                },
+                {
+                  "type": "tag",
+                  "name": "strong",
+                  "voidElement": false,
+                  "attrs": {},
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "HOW TO JOIN"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "tag",
+              "name": "p",
+              "voidElement": false,
+              "attrs": {},
+              "children": [
+                {
+                  "type": "tag",
+                  "name": "span",
+                  "voidElement": false,
+                  "attrs": {
+                    "class": "gold-shadow"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "FREE to all subscribers!"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": " Subscribe to "
+                },
+                {
+                  "type": "tag",
+                  "name": "a",
+                  "voidElement": false,
+                  "attrs": {
+                    "href": "https://www.twitch.tv/dkayed",
+                    "target": "_blank",
+                    "rel": "noopener"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "Dkayed"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": "'s Twitch, or check out the "
+                },
+                {
+                  "type": "tag",
+                  "name": "a",
+                  "voidElement": false,
+                  "attrs": {
+                    "href": "/shop"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "Shop"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": " and join our "
+                },
+                {
+                  "type": "tag",
+                  "name": "a",
+                  "voidElement": false,
+                  "attrs": {
+                    "href": "https://discord.gg/invite/duellinksmeta",
+                    "target": "_blank",
+                    "rel": "noopener"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "content": "Discord"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "content": "."
+                }
+              ]
+            }
+          ],
+          "customComponents": {}
+        }
+      },
+      "elapsed_s": 0.1
+    },
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/cards?limit=1",
+      "status": 200,
+      "resp_headers": {
+        "content-type": "application/json; charset=utf-8",
+        "server": "cloudflare",
+        "cf-ray": "a02dcc9f2d6572ec-IAD",
+        "cf-cache-status": "MISS"
+      },
+      "json_summary": {
+        "_id": "60c2b3a9a0e24f2d54a51341",
+        "monsterType": {
+          "_type": "list",
+          "_len": 0,
+          "_first": null
+        },
+        "popRank": 1.7976931348623157e+308,
+        "name": "\"A\" Cell Scatter Burst",
+        "konamiID": "73262676",
+        "type": "Spell",
+        "race": "Quick-Play",
+        "rarity": "N",
+        "description": "<str len=145>",
+        "release": "2018-02-19T00:00:00.000Z",
+        "obtain": {
+          "_type": "list",
+          "_len": 1,
+          "_first": {
+            "amount": 8,
+            "source": {
+              "_id": "60c26bdd7e2ec743f0f1d579",
+              "type": "Main Box",
+              "name": "Abyss Encounters",
+              "linkedArticle": {
+                "_id": "60efdd5e1aa6e913f97383d8",
+                "title": "Abyss Encounters",
+                "url": "/sets/abyss-encounters/"
+              }
+            },
+            "type": "sets"
+          }
+        },
+        "deckTypes": {
+          "_type": "list",
+          "_len": 0,
+          "_first": null
+        },
+        "linkArrows": {
+          "_type": "list",
+          "_len": 0,
+          "_first": null
+        },
+        "gameId": "6994",
+        "description_ja": "<str len=107>",
+        "name_ja": "「A」細胞散布爆弾"
+      },
+      "sample_item": {
+        "_id": "60c2b3a9a0e24f2d54a51341",
+        "monsterType": [],
+        "popRank": 1.7976931348623157e+308,
+        "name": "\"A\" Cell Scatter Burst",
+        "konamiID": "73262676",
+        "type": "Spell",
+        "race": "Quick-Play",
+        "rarity": "N",
+        "description": "Select 1 face-up \"Alien\" monster you control. Destroy it and distribute new A-Counters equal to its Level among your opponent's face-up monsters.",
+        "release": "2018-02-19T00:00:00.000Z",
+        "obtain": [
+          {
+            "amount": 8,
+            "source": {
+              "_id": "60c26bdd7e2ec743f0f1d579",
+              "type": "Main Box",
+              "name": "Abyss Encounters",
+              "linkedArticle": {
+                "_id": "60efdd5e1aa6e913f97383d8",
+                "title": "Abyss Encounters",
+                "url": "/sets/abyss-encounters/"
+              }
+            },
+            "type": "sets"
+          }
+        ],
+        "deckTypes": [],
+        "linkArrows": [],
+        "gameId": "6994",
+        "description_ja": "自分フィールド上の「エーリアン」と名のついたモンスター１体を選択して発動できる。選択した表側表示モンスターを破壊し、そのモンスターのレベルの数だけAカウンターを相手フィールド上に表側表示で存在するモンスターに置く。",
+        "name_ja": "「A」細胞散布爆弾"
+      },
+      "elapsed_s": 3.62
+    }
+  ]
+}
