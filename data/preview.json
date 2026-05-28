@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T14:18:08.852017+00:00",
+  "generated_at": "2026-05-28T14:19:37.902941+00:00",
   "totals": {
     "decks": 300,
     "archetypes": 66,
@@ -41,7 +41,7 @@
       "name": "Effect Veiler",
       "rarity": "UR",
       "spread": 15,
-      "overall_adoption": 0.367,
+      "overall_adoption": 0.357,
       "archetypes": [
         "ABC",
         "Beetrooper",
@@ -430,7 +430,7 @@
         },
         {
           "name": "Destiny HEROs の確定枠 (直近23件)",
-          "value": "`2枚 (avg 1.6)` Destiny HERO - Plasma (104%)\n`3枚` Destiny HERO - Malicious (100%)\n`1枚` Vision HERO Vyon (100%)\n`1枚` Destiny HERO - Denier (100%)\n`1枚` Elemental HERO Stratos (100%)\n`1枚` Fusion Destiny (100%)\n`1枚` Vision HERO Faris (100%)\n`1枚` Vision HERO Increase (100%)\n`3枚 (avg 2.6)` Effect Veiler (91%)\n`1枚` Elemental HERO Liquid Soldier (91%)\n`2枚 (avg 1.6)` Droll & Lock Bird (83%)\n`1枚` Destiny HERO - Dreamer (83%)",
+          "value": "`3枚` Destiny HERO - Malicious (100%)\n`2枚 (avg 1.7)` Destiny HERO - Plasma (100%)\n`1枚` Vision HERO Vyon (100%)\n`1枚` Destiny HERO - Denier (100%)\n`1枚` Elemental HERO Stratos (100%)\n`1枚` Fusion Destiny (100%)\n`1枚` Vision HERO Faris (100%)\n`1枚` Vision HERO Increase (100%)\n`1枚` Elemental HERO Liquid Soldier (91%)\n`3枚 (avg 2.7)` Effect Veiler (87%)\n`2枚 (avg 1.6)` Droll & Lock Bird (83%)\n`1枚` Destiny HERO - Dreamer (83%)",
           "inline": false
         }
       ]
