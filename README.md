@@ -22,8 +22,10 @@
 `📈上昇 / 📉下降 / 🆕新顔 / ➖横ばい` を判定します。入賞構築はサンプルが少ないため、
 汎用札の判定しきい値（採用アーキタイプ数・1アーキタイプの最小デッキ数）は緩めています。
 
-> サンプルの出力イメージは [`data/preview.json`](data/preview.json) を参照（合成データ）。
-> 実データ版は push のたびに CI が自動生成します。
+> サンプルの出力イメージは [`data/preview.sample.json`](data/preview.sample.json) を参照。
+> 実データ版は **DLM Preview** ワークフローが push のたびに生成し、Actions 実行ページの
+> ジョブサマリと成果物（artifact `preview-json`）で確認できます。生成物はリポジトリに
+> コミットしない（`data/preview.json` は gitignore）ので、マージ時に衝突しません。
 
 ## 構成
 
@@ -39,7 +41,7 @@ src/dlm/
   bot.py      — digest / analyze / staples / preview コマンド
 .github/workflows/
   digest.yml  — 1日1回（cron）＋ main への push（デプロイ）ごとに通知
-  preview.yml — src 変更時に data/preview.json を自動生成（Discord 不要）
+  preview.yml — src 変更時にダイジェストを生成し artifact / サマリで確認（コミットしない）
   probe.yml   — API 調査用（probe.py 変更時のみ）
 scripts/
   selftest.py — 合成データでのオフライン検証（ネットワーク不要）
