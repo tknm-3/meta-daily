@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - claude/deck-trends-display-6ZUPp
+      - main
     paths:
       - 'src/**'
       - '.github/workflows/preview.yml'

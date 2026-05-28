@@ -6,11 +6,6 @@ name: DLM API Probe
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - claude/duellinks-tournament-bot-LV24s
-    paths:
-      - 'scripts/probe.py'
 
 permissions:
   contents: write
