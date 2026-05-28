@@ -1,27 +1,25 @@
 #!/usr/bin/env python3
-"""Diagnostic probe for the duellinksmeta (DLM) API (round 2: tournament filter).
+"""Diagnostic probe for the duellinksmeta (DLM) API (round 3: tournament schema).
 
-Round 1 confirmed the API is reachable from Actions and captured the deck
-schema. The bot must surface *tournament* placings only (the site's
-#tournamentsOnly toggle), but the default top-decks feed mixes in King of Games
-ladder decks. This round discovers:
+Rounds 1-2 established: API reachable from Actions; deck schema known; there is
+no tournament-only query param (filter client-side); pagination uses `page`.
+King of Games decks have rankedType.name == "King of Games" and url under
+/king-of-games/; tournament decks have a null rankedType and url under
+/community-tournaments/ (or similar).
 
-  1. How "tournament only" is expressed - a query param, or a client-side
-     filter on each deck's rankedType. We census the distinct rankedType values
-     and try candidate filter params.
-  2. How pagination works (`from` offset vs `page`).
+This round dumps the FULL object of a few non-KoG (tournament) decks so we can
+see how the tournament name / placement is represented, which the Discord
+notification needs ("X placed Top 4 at tournament Y").
 
-Output -> data/probe-result.json (committed back) and the Actions log. Stdlib
-only; never raises - failures are recorded.
+Output -> data/probe-result.json. Stdlib only; never raises.
 """
 from __future__ import annotations
 
 import json
 import time
-from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib import error, parse, request
+from urllib import error, request
 
 BASE = "https://www.duellinksmeta.com"
 HEADERS = {
@@ -38,91 +36,52 @@ OUT = Path(__file__).resolve().parent.parent / "data" / "probe-result.json"
 
 
 def fetch(path: str):
-    url = BASE + path
-    req = request.Request(url, headers=HEADERS, method="GET")
-    started = time.time()
+    req = request.Request(BASE + path, headers=HEADERS, method="GET")
     try:
         with request.urlopen(req, timeout=30) as resp:
-            text = resp.read().decode("utf-8", errors="replace")
-            data = json.loads(text)
-            return {"status": resp.status, "data": data, "elapsed_s": round(time.time() - started, 2)}
-    except error.HTTPError as exc:
-        return {"status": exc.code, "error": f"HTTPError {exc.code} {exc.reason}",
-                "elapsed_s": round(time.time() - started, 2)}
-    except Exception as exc:  # noqa: BLE001
-        return {"error": f"{type(exc).__name__}: {exc}", "elapsed_s": round(time.time() - started, 2)}
+            return json.loads(resp.read().decode("utf-8", errors="replace"))
+    except (error.HTTPError, Exception) as exc:  # noqa: BLE001
+        return {"_probe_error": f"{type(exc).__name__}: {exc}"}
 
 
-def ranked_name(deck: dict) -> str:
-    rt = deck.get("rankedType") or {}
-    if isinstance(rt, dict):
-        return rt.get("name") or rt.get("shortName") or "?"
-    return str(rt)
-
-
-def census(decks):
-    """Summarize a deck list: how many, and the rankedType / deckType breakdown."""
-    if not isinstance(decks, list):
-        return {"note": "not a list", "value": str(decks)[:200]}
-    return {
-        "count": len(decks),
-        "rankedType_breakdown": dict(Counter(ranked_name(d) for d in decks).most_common()),
-        "deckType_sample": [
-            {
-                "deckType": (d.get("deckType") or {}).get("name"),
-                "tier": (d.get("deckType") or {}).get("tier"),
-                "rankedType": ranked_name(d),
-                "created": d.get("created"),
-                "url": d.get("url"),
-            }
-            for d in decks[:8]
-        ],
-    }
+def strip_cards(deck: dict) -> dict:
+    """Drop the bulky main/extra/side card arrays so the dumped object is small
+    and the tournament/placement metadata is easy to read."""
+    out = {}
+    for k, v in deck.items():
+        if k in ("main", "extra", "side"):
+            out[k] = f"<{len(v)} cards>" if isinstance(v, list) else v
+        else:
+            out[k] = v
+    return out
 
 
 def main() -> None:
-    report = {"probed_at": datetime.now(timezone.utc).isoformat(), "base": BASE, "probes": {}}
+    decks = fetch("/api/v1/top-decks?sort=-created&limit=60")
+    report = {"probed_at": datetime.now(timezone.utc).isoformat(), "base": BASE}
 
-    # 1) Big recent sample: what rankedType values actually appear?
-    r = fetch("/api/v1/top-decks?sort=-created&limit=60")
-    report["probes"]["recent_60"] = {
-        "status": r.get("status"), "error": r.get("error"), "elapsed_s": r.get("elapsed_s"),
-        "summary": census(r.get("data")) if "data" in r else None,
-    }
-
-    # 2) Candidate tournament-only filters.
-    candidates = [
-        "/api/v1/top-decks?sort=-created&limit=20&tournament=true",
-        "/api/v1/top-decks?sort=-created&limit=20&tournaments=true",
-        "/api/v1/top-decks?sort=-created&limit=20&rankedType=Tournament",
-        "/api/v1/top-decks?sort=-created&limit=20&kog=false",
-    ]
-    report["probes"]["tournament_filters"] = {}
-    for path in candidates:
-        key = parse.urlparse(path).query
-        r = fetch(path)
-        report["probes"]["tournament_filters"][key] = {
-            "status": r.get("status"), "error": r.get("error"),
-            "summary": census(r.get("data")) if "data" in r else None,
-        }
-
-    # 3) Pagination: does `from` offset / `page` change the window?
-    base_q = "/api/v1/top-decks?sort=-created&limit=5"
-    page0 = fetch(base_q)
-    page_from = fetch(base_q + "&from=5")
-    page_2 = fetch(base_q + "&page=2")
-
-    def ids(resp):
-        d = resp.get("data")
-        return [x.get("_id") for x in d][:5] if isinstance(d, list) else None
-
-    report["probes"]["pagination"] = {
-        "page0_ids": ids(page0),
-        "from5_ids": ids(page_from),
-        "page2_ids": ids(page_2),
-        "from5_differs": ids(page0) != ids(page_from) if ids(page0) and ids(page_from) else None,
-        "page2_differs": ids(page0) != ids(page_2) if ids(page0) and ids(page_2) else None,
-    }
+    if not isinstance(decks, list):
+        report["error"] = decks
+    else:
+        non_kog = [
+            d for d in decks
+            if not str(d.get("url", "")).startswith("/king-of-games/")
+        ]
+        report["top_level_keys_kog"] = sorted(
+            next((d.keys() for d in decks if str(d.get("url", "")).startswith("/king-of-games/")), [])
+        )
+        report["top_level_keys_non_kog"] = sorted(non_kog[0].keys()) if non_kog else []
+        report["non_kog_count_in_60"] = len(non_kog)
+        # Full (card-stripped) objects of a few tournament decks.
+        report["non_kog_samples"] = [strip_cards(d) for d in non_kog[:4]]
+        # Also show the distinct url path prefixes present, to map categories.
+        prefixes = {}
+        for d in decks:
+            parts = str(d.get("url", "")).split("/")
+            prefix = "/" + parts[1] if len(parts) > 1 else d.get("url")
+            prefixes.setdefault(prefix, 0)
+            prefixes[prefix] += 1
+        report["url_prefix_breakdown"] = prefixes
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False))
