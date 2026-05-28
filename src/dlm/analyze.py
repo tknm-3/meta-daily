@@ -25,6 +25,7 @@ class CardStat:
     rarity: str
     decks_running: int
     sample_size: int
+    card_id: str = ""  # representative id, for resolving artwork
     copies_hist: dict[int, int] = field(default_factory=dict)  # copies -> #decks
 
     @property
@@ -69,6 +70,7 @@ class GenericStaple:
     archetypes: list[str]
     overall_decks_running: int
     overall_sample: int
+    card_id: str = ""  # representative id, for resolving artwork
 
     @property
     def spread(self) -> int:
@@ -93,6 +95,7 @@ def card_stats(decks: list[Deck], zone: str = "main") -> list[CardStat]:
     running: dict[str, int] = defaultdict(int)
     hist: dict[str, Counter] = defaultdict(Counter)
     rarity: dict[str, str] = {}
+    card_id: dict[str, str] = {}
     for deck in decks:
         # Sum copies per name within the deck first: a card can appear as two
         # entries (e.g. alternate printings sharing a name), but it's still one
@@ -101,11 +104,13 @@ def card_stats(decks: list[Deck], zone: str = "main") -> list[CardStat]:
         for card in getattr(deck, zone):
             per_deck[card.name] += card.amount
             rarity[card.name] = card.rarity
+            if card.card_id and not card_id.get(card.name):
+                card_id[card.name] = card.card_id
         for name, amount in per_deck.items():
             running[name] += 1
             hist[name][amount] += 1
     stats = [
-        CardStat(name, rarity[name], running[name], n, dict(hist[name]))
+        CardStat(name, rarity[name], running[name], n, card_id.get(name, ""), dict(hist[name]))
         for name in running
     ]
     stats.sort(key=lambda s: (-s.adoption, -s.avg_copies, s.name))
@@ -132,11 +137,14 @@ def generic_staples(
     groups = group_by_archetype(decks)
     card_archetypes: dict[str, set[str]] = defaultdict(set)
     rarity: dict[str, str] = {}
+    card_id: dict[str, str] = {}
     for archetype, archetype_decks in groups.items():
         if len(archetype_decks) < min_arch_size:
             continue
         for stat in card_stats(archetype_decks, zone):
             rarity[stat.name] = stat.rarity
+            if stat.card_id and not card_id.get(stat.name):
+                card_id[stat.name] = stat.card_id
             if stat.adoption >= arch_adoption:
                 card_archetypes[stat.name].add(archetype)
 
@@ -153,6 +161,7 @@ def generic_staples(
             archetypes=sorted(archetypes),
             overall_decks_running=overall_running[name],
             overall_sample=n_total,
+            card_id=card_id.get(name, ""),
         )
         for name, archetypes in card_archetypes.items()
         if len(archetypes) >= min_archetypes
