@@ -94,10 +94,16 @@ def card_stats(decks: list[Deck], zone: str = "main") -> list[CardStat]:
     hist: dict[str, Counter] = defaultdict(Counter)
     rarity: dict[str, str] = {}
     for deck in decks:
+        # Sum copies per name within the deck first: a card can appear as two
+        # entries (e.g. alternate printings sharing a name), but it's still one
+        # adopting deck, so adoption never exceeds 100%.
+        per_deck: dict[str, int] = defaultdict(int)
         for card in getattr(deck, zone):
-            running[card.name] += 1
-            hist[card.name][card.amount] += 1
+            per_deck[card.name] += card.amount
             rarity[card.name] = card.rarity
+        for name, amount in per_deck.items():
+            running[name] += 1
+            hist[name][amount] += 1
     stats = [
         CardStat(name, rarity[name], running[name], n, dict(hist[name]))
         for name in running
@@ -136,8 +142,8 @@ def generic_staples(
 
     overall_running: dict[str, int] = defaultdict(int)
     for deck in decks:
-        for card in getattr(deck, zone):
-            overall_running[card.name] += 1
+        for name in {card.name for card in getattr(deck, zone)}:
+            overall_running[name] += 1
 
     n_total = len(decks)
     staples = [
