@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T23:01:15.477998+00:00",
+  "generated_at": "2026-05-28T23:30:11.955085+00:00",
   "window_days": 5,
   "corpus_size": 350,
   "totals": {
@@ -16,7 +16,7 @@
       "fields": [
         {
           "name": "🏆 大会で勝っているデッキ",
-          "value": "**Stardust / Synchron** — 🏆4 ・ 入賞16件 📉\n**Elemental HERO: Rush!** — 🏆1 ・ 入賞3件 📉\n**Gradius: Rush!** — 🏆1 ・ 入賞3件 ➖\n**Resonators** — 🏆1 ・ 入賞3件 📈\n**Therion** — 🏆1 ・ 入賞2件 📉\n**Centur-Ion** — 🏆1 ・ 入賞1件 📈\n**High Tech Dragons** — 🏆1 ・ 入賞1件 🆕\n**Ether Dragon** — 入賞3件 ➖",
+          "value": "**Stardust / Synchron** — 🏆4 ・ 入賞16件 📉\n**Elemental HERO: Rush!** — 🏆1 ・ 入賞3件 📉\n**Gradius: Rush!** — 🏆1 ・ 入賞3件 ➖\n**Resonators** — 🏆1 ・ 入賞3件 📈\n**Therion** — 🏆1 ・ 入賞2件 📉\n**Centur-Ion** — 🏆1 ・ 入賞1件 📈\n**High Tech Dragons** — 🏆1 ・ 入賞1件 🆕\n**Ether Dragon** — 入賞3件 ➖\n**Vaalmonica** — 入賞1件 📉\n**Voidvelg** — 入賞1件 📈",
           "inline": false
         }
       ],
@@ -31,9 +31,9 @@
       "title": "🃏 流行りの汎用札（複数の入賞構築で採用）",
       "url": "https://www.duellinksmeta.com/top-decks",
       "color": 5793266,
-      "description": "➖ **Forbidden Droplet** [UR] — 6デッキ採用・全体66%\n➖ **D.D. Crow** [UR] — 5デッキ採用・全体28%\n➖ **Effect Veiler** [UR] — 4デッキ採用・全体34%\n🆕 **Pot of Greed** [UR] — 4デッキ採用・全体12%\n📉 **Shiny Shady** [SR] — 4デッキ採用・全体12%\n🆕 **Buffered Slime** [UR] — 4デッキ採用・全体6%\n📈 **Synchro Rumble** [SR] — 3デッキ採用・全体35%\n📈 **Droll & Lock Bird** [UR] — 3デッキ採用・全体33%\n➖ **Book of Eclipse** [SR] — 3デッキ採用・全体19%\n🆕 **Ghost Belle & Haunted Mansion** [UR] — 3デッキ採用・全体18%\n🆕 **Dark Ruler No More** [UR] — 3デッキ採用・全体16%\n🆕 **The Winged Dragon of Ra - Sphere Mode** [UR] — 3デッキ採用・全体11%",
+      "description": "🆕 **Dark Ruler No More** [UR] — 4デッキ採用・全体28%\n➖ **Forbidden Droplet** [UR] — 3デッキ採用・全体57%\n📈 **Droll & Lock Bird** [UR] — 3デッキ採用・全体38%\n🆕 **Ghost Belle & Haunted Mansion** [UR] — 3デッキ採用・全体35%\n📉 **Card Trooper** [UR] — 3デッキ採用・全体15%\n🆕 **Shining Star Dragon** [UR] — 2デッキ採用・全体48%\n🆕 **Synchro Rumble** [SR] — 2デッキ採用・全体32%\n➖ **Pot of Greed** [UR] — 2デッキ採用・全体20%\n➖ **Shiny Shady** [SR] — 2デッキ採用・全体18%\n🆕 **Trap Eater** [N] — 2デッキ採用・全体18%\n🆕 **Star Protector's Protection** [UR] — 2デッキ採用・全体15%\n📉 **Ghost Mourner & Moonlit Chill** [UR] — 2デッキ採用・全体12%",
       "thumbnail": {
-        "url": "https://s3.duellinksmeta.com/cards/60c2b3aaa0e24f2d54a521e8_w140.webp"
+        "url": "https://s3.duellinksmeta.com/cards/60c2b3aaa0e24f2d54a51c57_w140.webp"
       }
     }
   ]
