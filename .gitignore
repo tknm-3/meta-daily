@@ -5,3 +5,8 @@ __pycache__/
 venv/
 *.egg-info/
 .DS_Store
+
+# Generated at runtime / by CI (the `preview` command + DLM Preview workflow).
+# Kept out of git so the auto-refreshed live data never causes merge conflicts;
+# a static reviewable sample lives in data/preview.sample.json instead.
+data/preview.json

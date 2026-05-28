@@ -1,20 +1,27 @@
 name: DLM Preview
 
 # Inspect what the bot would post (the meta digest), against live data, without
-# touching Discord. Auto-runs on src changes on this branch and commits
-# data/preview.json so the rendered output (and image URLs) can be reviewed.
+# touching Discord. Runs on src changes on this branch and publishes the
+# rendered digest as a downloadable artifact + a job-summary preview.
+#
+# It deliberately does NOT commit data/preview.json back to the repo: that file
+# is generated and changes on every run (timestamps + live data), so committing
+# it made the branch and main diverge constantly and caused merge conflicts.
+# The file is gitignored; a static sample lives in data/preview.sample.json.
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+      - claude/duellinks-tournament-bot-LV24s
+      - claude/tournament-decks-meta-cards-DhBfA
     paths:
       - 'src/**'
       - '.github/workflows/preview.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   preview:
@@ -29,14 +36,18 @@ jobs:
       - name: Build live preview
         run: PYTHONPATH=src python -m dlm.bot preview
 
-      - name: Commit preview
+      - name: Render preview into the job summary
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/preview.json
-          if git diff --cached --quiet; then
-            echo "No preview change."
-          else
-            git commit -m "chore: update live preview [skip ci]"
-            git push
-          fi
+          {
+            echo '## DLM meta digest — live preview'
+            echo '```json'
+            cat data/preview.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-json
+          path: data/preview.json
+          if-no-files-found: error

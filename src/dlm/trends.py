@@ -1,11 +1,12 @@
 """Build a glanceable, periodic *meta digest* instead of dumping full deck lists.
 
 The premise (per the user): individual card-by-card decklists are best read on
-duellinksmeta.com itself, so the bot's job is the at-a-glance summary —
+duellinksmeta.com itself, so the bot's job is the at-a-glance summary. We only
+summarise **tournament placement builds（大会の入賞構築）** — ladder/KoG and
+featured decks are deliberately excluded — and report just two things:
 
-  1. 大会で優勝したデッキタイプ   → which archetypes are actually winning events
-  2. 流行ってた汎用札            → generic staples seen across the environment
-  3. ここ5日間の流行り          → what's rising / falling versus the prior period
+  1. 大会で勝っているデッキタイプ → which archetypes are actually winning events
+  2. 流行りの汎用札              → generic staples seen across those placements
 
 Everything is computed over a rolling time window (default 5 days) and compared
 against the immediately-preceding window of equal length to derive a trend
@@ -17,7 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
-from .analyze import GenericStaple, generic_staples, group_by_archetype
+from .analyze import GenericStaple, generic_staples
 from .models import TOURNAMENT, Deck
 
 # Placement → score, so "actually winning" outranks "merely Top 16". Anything
@@ -29,6 +30,12 @@ _OTHER = 1
 
 # Relative change needed to call a trend up/down rather than flat (±15%).
 _TREND_BAND = 0.15
+
+# Staple detection over the tournament-only corpus. The placement sample is much
+# smaller than the full ladder corpus, so the spread/size thresholds are relaxed
+# (a card splashed across ≥2 placing archetypes, each with ≥2 decks, counts).
+_STAPLE_MIN_ARCHETYPES = 2
+_STAPLE_MIN_ARCH_SIZE = 2
 
 
 def _placement_score(placement: str | None) -> int:
@@ -75,18 +82,6 @@ class WinningDeck:
 
 
 @dataclass
-class ArchetypeTrend:
-    archetype: str
-    count: int           # decks of this archetype in the current window
-    prev_count: int      # ditto, previous window
-    share: float         # count / total decks in current window
-
-    @property
-    def trend(self) -> str:
-        return direction(self.count, self.prev_count)
-
-
-@dataclass
 class StapleTrend:
     staple: GenericStaple
     prev_adoption: float
@@ -105,13 +100,12 @@ class Digest:
     total_decks: int            # decks in current window (all categories)
     tournament_decks: int       # tournament-category decks in current window
     winning_decks: list[WinningDeck] = field(default_factory=list)
-    rising_archetypes: list[ArchetypeTrend] = field(default_factory=list)
     staples: list[StapleTrend] = field(default_factory=list)
     headline_icon: str | None = None  # site-relative tournament logo, if any
 
     @property
     def has_data(self) -> bool:
-        return bool(self.winning_decks or self.rising_archetypes or self.staples)
+        return bool(self.winning_decks or self.staples)
 
 
 def _in_window(decks: list[Deck], start: datetime, end: datetime) -> list[Deck]:
@@ -153,27 +147,13 @@ def _winning_decks(current: list[Deck], previous: list[Deck]) -> list[WinningDec
     return decks
 
 
-def _archetype_trends(current: list[Deck], previous: list[Deck]) -> list[ArchetypeTrend]:
-    cur_groups = group_by_archetype(current)
-    prev_groups = group_by_archetype(previous)
-    total = len(current) or 1
-    trends = [
-        ArchetypeTrend(
-            archetype=a,
-            count=len(ds),
-            prev_count=len(prev_groups.get(a, [])),
-            share=len(ds) / total,
-        )
-        for a, ds in cur_groups.items()
-    ]
-    # Surface movers: biggest absolute climbers first, then by current volume.
-    trends.sort(key=lambda t: (-(t.count - t.prev_count), -t.count, t.archetype))
-    return trends
-
-
 def _staple_trends(current: list[Deck], previous: list[Deck]) -> list[StapleTrend]:
-    cur_staples = generic_staples(current)
-    prev_staples = {s.name: s.overall_adoption for s in generic_staples(previous)}
+    kwargs = dict(
+        min_archetypes=_STAPLE_MIN_ARCHETYPES,
+        min_arch_size=_STAPLE_MIN_ARCH_SIZE,
+    )
+    cur_staples = generic_staples(current, **kwargs)
+    prev_staples = {s.name: s.overall_adoption for s in generic_staples(previous, **kwargs)}
     return [StapleTrend(staple=s, prev_adoption=prev_staples.get(s.name, 0.0)) for s in cur_staples]
 
 
@@ -185,11 +165,13 @@ def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> D
     current = _in_window(decks, window_start, now)
     previous = _in_window(decks, prev_start, window_start)
 
+    # Only tournament placement builds (入賞構築) feed the digest; ladder/KoG and
+    # featured decks are excluded from both winning decks and staples.
+    cur_t = [d for d in current if d.category == TOURNAMENT]
+    prev_t = [d for d in previous if d.category == TOURNAMENT]
+
     winning = _winning_decks(current, previous)
-    headline_icon = next(
-        (d.tournament_icon for d in current if d.category == TOURNAMENT and d.tournament_icon),
-        None,
-    )
+    headline_icon = next((d.tournament_icon for d in cur_t if d.tournament_icon), None)
 
     return Digest(
         generated_at=now,
@@ -197,9 +179,8 @@ def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> D
         window_start=window_start,
         prev_start=prev_start,
         total_decks=len(current),
-        tournament_decks=sum(1 for d in current if d.category == TOURNAMENT),
+        tournament_decks=len(cur_t),
         winning_decks=winning,
-        rising_archetypes=_archetype_trends(current, previous),
-        staples=_staple_trends(current, previous),
+        staples=_staple_trends(cur_t, prev_t),
         headline_icon=headline_icon,
     )
