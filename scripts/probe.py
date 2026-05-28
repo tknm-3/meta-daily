@@ -1,37 +1,29 @@
 #!/usr/bin/env python3
-"""Diagnostic probe for the duellinksmeta (DLM) API.
+"""Diagnostic probe for the duellinksmeta (DLM) API (round 2: tournament filter).
 
-Purpose: this repo's bot must run somewhere with outbound internet (GitHub
-Actions). Before building the deck parser/analyzer we need to confirm two
-things from such an environment:
+Round 1 confirmed the API is reachable from Actions and captured the deck
+schema. The bot must surface *tournament* placings only (the site's
+#tournamentsOnly toggle), but the default top-decks feed mixes in King of Games
+ladder decks. This round discovers:
 
-  1. Is the DLM API reachable at all (or blocked by Cloudflare / a challenge)?
-  2. What is the real response shape for top-decks / tournaments / cards?
+  1. How "tournament only" is expressed - a query param, or a client-side
+     filter on each deck's rankedType. We census the distinct rankedType values
+     and try candidate filter params.
+  2. How pagination works (`from` offset vs `page`).
 
-The probe never raises on HTTP or network errors - it records them, because a
-403 or a Cloudflare challenge page is itself a useful result. Output is written
-to data/probe-result.json (committed back by the workflow) and printed to the
-Actions log. Uses only the standard library so no install step is required.
+Output -> data/probe-result.json (committed back) and the Actions log. Stdlib
+only; never raises - failures are recorded.
 """
 from __future__ import annotations
 
 import json
 import time
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib import error, request
+from urllib import error, parse, request
 
 BASE = "https://www.duellinksmeta.com"
-
-# Best-guess endpoints. The exact params are unknown, so probe a few variants;
-# one run then tells us which work and what they return.
-ENDPOINTS = [
-    "/api/v1/top-decks?limit=3",
-    "/api/v1/top-decks?limit=3&sort=-created",
-    "/api/v1/tournaments?limit=2",
-    "/api/v1/cards?limit=1",
-]
-
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -42,92 +34,99 @@ HEADERS = {
     "Referer": f"{BASE}/top-decks",
     "Origin": BASE,
 }
-
 OUT = Path(__file__).resolve().parent.parent / "data" / "probe-result.json"
 
-INTERESTING_HEADERS = (
-    "content-type",
-    "server",
-    "cf-ray",
-    "cf-cache-status",
-    "x-cache",
-    "x-deny-reason",
-    "retry-after",
-)
 
-
-def summarize(data, depth: int = 0):
-    """Compact description of a JSON value (keys + value types/lengths) so the
-    committed result stays readable even for large payloads."""
-    if depth > 6:
-        return "<...>"
-    if isinstance(data, dict):
-        return {k: summarize(v, depth + 1) for k, v in list(data.items())[:60]}
-    if isinstance(data, list):
-        return {
-            "_type": "list",
-            "_len": len(data),
-            "_first": summarize(data[0], depth + 1) if data else None,
-        }
-    if isinstance(data, str):
-        return f"<str len={len(data)}>" if len(data) > 80 else data
-    return data
-
-
-def probe(path: str) -> dict:
+def fetch(path: str):
     url = BASE + path
     req = request.Request(url, headers=HEADERS, method="GET")
     started = time.time()
-    result: dict = {"url": url}
     try:
         with request.urlopen(req, timeout=30) as resp:
-            body = resp.read()
-            text = body.decode("utf-8", errors="replace")
-            result["status"] = resp.status
-            result["resp_headers"] = {
-                h: resp.headers.get(h) for h in INTERESTING_HEADERS if resp.headers.get(h)
-            }
-            ctype = resp.headers.get("content-type", "")
-            if "json" in ctype or text[:1] in "[{":
-                try:
-                    parsed = json.loads(text)
-                    result["json_summary"] = summarize(parsed)
-                    # Keep one full item so we can see the exact deck schema.
-                    result["sample_item"] = (
-                        parsed[0] if isinstance(parsed, list) and parsed else parsed
-                    )
-                except json.JSONDecodeError as exc:
-                    result["json_error"] = str(exc)
-                    result["body_snippet"] = text[:1500]
-            else:
-                result["body_snippet"] = text[:1500]
+            text = resp.read().decode("utf-8", errors="replace")
+            data = json.loads(text)
+            return {"status": resp.status, "data": data, "elapsed_s": round(time.time() - started, 2)}
     except error.HTTPError as exc:
-        result["status"] = exc.code
-        result["error"] = f"HTTPError {exc.code} {exc.reason}"
-        result["resp_headers"] = {
-            h: exc.headers.get(h) for h in INTERESTING_HEADERS if exc.headers and exc.headers.get(h)
-        }
-        try:
-            result["body_snippet"] = exc.read().decode("utf-8", errors="replace")[:1500]
-        except Exception:  # noqa: BLE001
-            pass
-    except Exception as exc:  # noqa: BLE001 - every failure mode is informative
-        result["error"] = f"{type(exc).__name__}: {exc}"
-    result["elapsed_s"] = round(time.time() - started, 2)
-    return result
+        return {"status": exc.code, "error": f"HTTPError {exc.code} {exc.reason}",
+                "elapsed_s": round(time.time() - started, 2)}
+    except Exception as exc:  # noqa: BLE001
+        return {"error": f"{type(exc).__name__}: {exc}", "elapsed_s": round(time.time() - started, 2)}
+
+
+def ranked_name(deck: dict) -> str:
+    rt = deck.get("rankedType") or {}
+    if isinstance(rt, dict):
+        return rt.get("name") or rt.get("shortName") or "?"
+    return str(rt)
+
+
+def census(decks):
+    """Summarize a deck list: how many, and the rankedType / deckType breakdown."""
+    if not isinstance(decks, list):
+        return {"note": "not a list", "value": str(decks)[:200]}
+    return {
+        "count": len(decks),
+        "rankedType_breakdown": dict(Counter(ranked_name(d) for d in decks).most_common()),
+        "deckType_sample": [
+            {
+                "deckType": (d.get("deckType") or {}).get("name"),
+                "tier": (d.get("deckType") or {}).get("tier"),
+                "rankedType": ranked_name(d),
+                "created": d.get("created"),
+                "url": d.get("url"),
+            }
+            for d in decks[:8]
+        ],
+    }
 
 
 def main() -> None:
-    report = {
-        "probed_at": datetime.now(timezone.utc).isoformat(),
-        "base": BASE,
-        "results": [probe(p) for p in ENDPOINTS],
+    report = {"probed_at": datetime.now(timezone.utc).isoformat(), "base": BASE, "probes": {}}
+
+    # 1) Big recent sample: what rankedType values actually appear?
+    r = fetch("/api/v1/top-decks?sort=-created&limit=60")
+    report["probes"]["recent_60"] = {
+        "status": r.get("status"), "error": r.get("error"), "elapsed_s": r.get("elapsed_s"),
+        "summary": census(r.get("data")) if "data" in r else None,
     }
+
+    # 2) Candidate tournament-only filters.
+    candidates = [
+        "/api/v1/top-decks?sort=-created&limit=20&tournament=true",
+        "/api/v1/top-decks?sort=-created&limit=20&tournaments=true",
+        "/api/v1/top-decks?sort=-created&limit=20&rankedType=Tournament",
+        "/api/v1/top-decks?sort=-created&limit=20&kog=false",
+    ]
+    report["probes"]["tournament_filters"] = {}
+    for path in candidates:
+        key = parse.urlparse(path).query
+        r = fetch(path)
+        report["probes"]["tournament_filters"][key] = {
+            "status": r.get("status"), "error": r.get("error"),
+            "summary": census(r.get("data")) if "data" in r else None,
+        }
+
+    # 3) Pagination: does `from` offset / `page` change the window?
+    base_q = "/api/v1/top-decks?sort=-created&limit=5"
+    page0 = fetch(base_q)
+    page_from = fetch(base_q + "&from=5")
+    page_2 = fetch(base_q + "&page=2")
+
+    def ids(resp):
+        d = resp.get("data")
+        return [x.get("_id") for x in d][:5] if isinstance(d, list) else None
+
+    report["probes"]["pagination"] = {
+        "page0_ids": ids(page0),
+        "from5_ids": ids(page_from),
+        "page2_ids": ids(page_2),
+        "from5_differs": ids(page0) != ids(page_from) if ids(page0) and ids(page_from) else None,
+        "page2_differs": ids(page0) != ids(page_2) if ids(page0) and ids(page_2) else None,
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False))
     print(json.dumps(report, indent=2, ensure_ascii=False))
-    reachable = sorted({r.get("status") for r in report["results"] if r.get("status")})
-    print(f"\n=== status codes seen: {reachable} ===")
 
 
 if __name__ == "__main__":
