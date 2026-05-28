@@ -160,6 +160,7 @@ def _staple_trends(current: list[Deck], previous: list[Deck]) -> list[StapleTren
 def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> Digest:
     """Compute the full digest from a corpus that should already span at least
     `2 * window_days` of `created` history (so the previous window is populated)."""
+    decks = [d for d in decks if not d.is_rush]
     window_start = now - timedelta(days=window_days)
     prev_start = now - timedelta(days=2 * window_days)
     current = _in_window(decks, window_start, now)
