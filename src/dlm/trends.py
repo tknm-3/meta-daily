@@ -38,16 +38,24 @@ _OTHER = 1
 _TREND_BAND = 0.15
 
 # Staple detection over the tournament-only corpus. The placement sample is much
-# smaller than the full ladder corpus, so the spread/size thresholds are relaxed
-# (a card splashed across ≥2 placing archetypes, each with ≥2 decks, counts).
+# smaller than the full ladder corpus, so the spread/size thresholds are relaxed.
+# min_arch_size=1 lets single-placement archetypes contribute: when the meta is
+# diverse (many archetypes with 1–2 decks each), requiring ≥2 decks per archetype
+# silently excludes most of the corpus and produces an empty staple list.
 _STAPLE_MIN_ARCHETYPES = 2
-_STAPLE_MIN_ARCH_SIZE = 2
+_STAPLE_MIN_ARCH_SIZE = 1
 
 # Per-deck staples: how a detected generic staple is run *within* one archetype.
 # Only surface staples adopted by a meaningful share of that deck's lists, and
 # cap how many we show per deck so the section stays glanceable.
 _DECK_STAPLE_MIN_ADOPTION = 0.40
 _DECK_STAPLE_TOP = 5
+
+# Full-corpus staple detection (KoG + tournament + featured combined).
+# Larger sample allows stricter thresholds: card must appear in ≥3 archetypes,
+# each represented by ≥2 decks.
+_OVERALL_MIN_ARCHETYPES = 3
+_OVERALL_MIN_ARCH_SIZE = 2
 
 
 def _placement_score(placement: str | None) -> int:
@@ -113,12 +121,13 @@ class Digest:
     total_decks: int            # decks in current window (all categories)
     tournament_decks: int       # tournament-category decks in current window
     winning_decks: list[WinningDeck] = field(default_factory=list)
-    staples: list[StapleTrend] = field(default_factory=list)
+    staples: list[StapleTrend] = field(default_factory=list)       # tournament-only
+    all_staples: list[StapleTrend] = field(default_factory=list)   # full corpus
     headline_icon: str | None = None  # site-relative tournament logo, if any
 
     @property
     def has_data(self) -> bool:
-        return bool(self.winning_decks or self.staples)
+        return bool(self.winning_decks or self.staples or self.all_staples)
 
 
 def _in_window(decks: list[Deck], start: datetime, end: datetime) -> list[Deck]:
@@ -185,6 +194,16 @@ def _staple_trends(current: list[Deck], previous: list[Deck]) -> list[StapleTren
     return [StapleTrend(staple=s, prev_adoption=prev_staples.get(s.name, 0.0)) for s in cur_staples]
 
 
+def _all_staple_trends(current: list[Deck], previous: list[Deck]) -> list[StapleTrend]:
+    kwargs = dict(
+        min_archetypes=_OVERALL_MIN_ARCHETYPES,
+        min_arch_size=_OVERALL_MIN_ARCH_SIZE,
+    )
+    cur_staples = generic_staples(current, **kwargs)
+    prev_staples = {s.name: s.overall_adoption for s in generic_staples(previous, **kwargs)}
+    return [StapleTrend(staple=s, prev_adoption=prev_staples.get(s.name, 0.0)) for s in cur_staples]
+
+
 def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> Digest:
     """Compute the full digest from a corpus that should already span at least
     `2 * window_days` of `created` history (so the previous window is populated)."""
@@ -212,5 +231,6 @@ def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> D
         tournament_decks=len(cur_t),
         winning_decks=winning,
         staples=staple_trends,
+        all_staples=_all_staple_trends(current, previous),
         headline_icon=headline_icon,
     )
