@@ -1,0 +1,85 @@
+{
+  "probed_at": "2026-05-29T06:38:04.368493+00:00",
+  "question": "Is match-level (head-to-head) tournament data obtainable?",
+  "found_tournament_deck": true,
+  "sample_tournament": {
+    "customTournamentName": "Sky Striker Cup",
+    "tournamentNumber": "94",
+    "article_id": "6a190875912b29fa80da025c",
+    "article_url": "/tournaments/sky-striker-cup/94/report/"
+  },
+  "report_probes": [
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/articles/6a190875912b29fa80da025c",
+      "status": 404,
+      "error": "HTTPError 404 Not Found"
+    },
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/articles?_id=6a190875912b29fa80da025c",
+      "status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 15502,
+      "scan": {
+        "bracket_keywords_found": [
+          "single elim"
+        ],
+        "bracket_hosts_mentioned": [
+          "tonamel.com"
+        ],
+        "external_bracket_urls": [
+          "https://tonamel.com/competition/VA23z/tournament"
+        ]
+      },
+      "snippet": "[{\"_id\":\"6a190875912b29fa80da025c\",\"date\":\"2026-05-29T03:31:02.099Z\",\"authors\":[{\"_id\":\"601c90411d477000155eee79\",\"description\":\"Heya! Pl0x here, known as Sally in DLM. I'm super cute, blind without my glasses, and have HUGE  tiddies that get buffed every banlist.\\n\\nFeel free to message me if you need anything!\",\"roles\":[{\"_id\":\"5fef691d49d76ac3d87273ac\",\"name\":\"Content Manager\",\"color\":\"#00B115\",\"position\":13},{\"_id\":\"61269d28a9d162003f7eb5bd\",\"name\":\"DLM Moderator\",\"color\":\"#9be60f\",\"position\":7},{\"_id\":\"6018ba29daf32b4af025e455\",\"name\":\"Moderator\",\"color\":\"#b18cfe\",\"position\":5},{\"_id\":\"61"
+    },
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/articles?url=/tournaments/sky-striker-cup/94/report/",
+      "status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 15502,
+      "scan": {
+        "bracket_keywords_found": [
+          "single elim"
+        ],
+        "bracket_hosts_mentioned": [
+          "tonamel.com"
+        ],
+        "external_bracket_urls": [
+          "https://tonamel.com/competition/VA23z/tournament"
+        ]
+      },
+      "snippet": "[{\"_id\":\"6a190875912b29fa80da025c\",\"date\":\"2026-05-29T03:31:02.099Z\",\"authors\":[{\"_id\":\"601c90411d477000155eee79\",\"description\":\"Heya! Pl0x here, known as Sally in DLM. I'm super cute, blind without my glasses, and have HUGE  tiddies that get buffed every banlist.\\n\\nFeel free to message me if you need anything!\",\"roles\":[{\"_id\":\"5fef691d49d76ac3d87273ac\",\"name\":\"Content Manager\",\"color\":\"#00B115\",\"position\":13},{\"_id\":\"61269d28a9d162003f7eb5bd\",\"name\":\"DLM Moderator\",\"color\":\"#9be60f\",\"position\":7},{\"_id\":\"6018ba29daf32b4af025e455\",\"name\":\"Moderator\",\"color\":\"#b18cfe\",\"position\":5},{\"_id\":\"61"
+    },
+    {
+      "url": "https://www.duellinksmeta.com/api/v1/article/6a190875912b29fa80da025c",
+      "status": 404,
+      "error": "HTTPError 404 Not Found"
+    },
+    {
+      "url": "https://www.duellinksmeta.com/tournaments/sky-striker-cup/94/report/",
+      "status": 404,
+      "error": "HTTPError 404 Not Found"
+    }
+  ],
+  "tonamel_probes": [
+    {
+      "url": "https://tonamel.com/",
+      "status": 200,
+      "content_type": "text/html",
+      "bytes": 5733,
+      "has_next_data": false,
+      "has_apollo_state": false,
+      "mentions_graphql": false,
+      "snippet": "<!doctype html>\n<html lang=\"ja\" prefix=\"og: http://ogp.me/ns#\" data-n-head=\"%7B%22lang%22:%7B%221%22:%22ja%22%7D,%22prefix%22:%7B%221%22:%22og:%20http://ogp.me/ns#%22%7D%7D\">\n  <head>\n    <title>\nTonamel - Better Tournaments, Better Platform    </title>\n    <meta name=\"twitter:title\" content=\"Tonamel - Better Tournaments, Better Platform\">\n    <meta name=\"description\" content=\"With Tonamel, anyone"
+    },
+    {
+      "url": "https://tonamel.com/competition/",
+      "status": 404,
+      "error": "HTTPError 404 Not Found",
+      "has_next_data": false,
+      "has_apollo_state": false,
+      "mentions_graphql": false,
+      "snippet": ""
+    }
+  ]
+}
