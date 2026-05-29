@@ -88,6 +88,37 @@ def _all_keys(obj, out=None) -> set:
     return out
 
 
+def inspect_nuxt(html: str) -> dict:
+    """Extract the Nuxt SSR state blob and report whether it carries match /
+    result / participant data (the substance of a bracket).
+
+    Nuxt 2 emits `window.__NUXT__=(function(...){return {...}}(...))`, which is
+    JS, not pure JSON — so we don't try to parse it. Instead we count signal
+    keywords and capture a few context windows around match/winner mentions so
+    we can eyeball the actual shape (participant names, winner ids, scores)."""
+    start = html.find("__NUXT__")
+    blob = html[start:start + 200000] if start >= 0 else ""
+    low = blob.lower()
+    signals = [
+        "match", "winner", "loser", "participant", "competitor", "entry",
+        "bracket", "round", "score", "result", "seed", "name", "team",
+    ]
+    counts = {s: low.count(s) for s in signals}
+    # Grab a few short windows around "winner"/"match" to reveal field names.
+    samples = []
+    for kw in ("winner", "\"match", "participant", "competitor"):
+        i = blob.find(kw)
+        if i >= 0:
+            samples.append(blob[max(0, i - 60):i + 140])
+        if len(samples) >= 4:
+            break
+    return {
+        "blob_len": len(blob),
+        "keyword_counts": counts,
+        "context_samples": samples,
+    }
+
+
 def scan_text(text: str) -> dict:
     low = text.lower()
     found_kw = sorted({k.strip() for k in BRACKET_KEYWORDS if k in low})
@@ -200,8 +231,12 @@ def main() -> None:
             + re.findall(r"[\"'](/api/[^\"'\s]+)", text)
         ))[:25]
         rec["api_paths_referenced"] = api_paths
+        # If the Nuxt SSR blob is present, inspect it for match/result/name data
+        # — this is what decides whether "who beat whom" is actually extractable.
+        if "__NUXT__" in text:
+            rec["nuxt"] = inspect_nuxt(text)
         rec["scan"] = scan_text(text)
-        rec["snippet"] = text[:500]
+        rec["snippet"] = text[:300]
         out_tonamel.append(rec)
     report["tonamel_probes"] = out_tonamel
 
