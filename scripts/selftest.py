@@ -112,6 +112,16 @@ def main() -> int:
     check("Branded" not in droplet.staple.archetypes,
           "KoG-only archetype (Branded) must not appear in staple spread")
 
+    # --- per-deck staples: each winning deck carries its own popular staples ---
+    stardust = winners["Stardust / Synchron"]
+    deck_staple_names = {s.name for s in stardust.staples}
+    check("Forbidden Droplet" in deck_staple_names,
+          "Stardust's per-deck staples should include Forbidden Droplet")
+    check(all(s.adoption >= 0.4 for s in stardust.staples),
+          "per-deck staples should respect the in-deck adoption threshold")
+    check(all("Engine" not in s.name for s in stardust.staples),
+          "engine pieces must not appear among per-deck staples")
+
     # --- headline icon resolved from payload ---
     check(digest.headline_icon == ICON, "headline icon should come from tournament payload")
 
@@ -126,6 +136,15 @@ def main() -> int:
         for e in embeds
     )
     check(has_card_art, "a digest embed should carry card artwork")
+    # The per-deck staples embed should be present, with per-archetype fields.
+    deck_staple_embed = next(
+        (e for e in embeds if e.get("title", "").startswith("🃏 デッキ別")), None
+    )
+    check(deck_staple_embed is not None, "digest should include a per-deck staples embed")
+    if deck_staple_embed is not None:
+        names = {f["name"] for f in deck_staple_embed.get("fields", [])}
+        check("Stardust / Synchron" in names,
+              "per-deck staples embed should have a Stardust field")
     for e in embeds:
         check(len(e.get("title", "")) <= 256, "title over 256")
         check(len(e.get("description", "")) <= 4096, "description over 4096")

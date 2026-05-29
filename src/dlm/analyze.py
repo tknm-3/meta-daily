@@ -173,3 +173,24 @@ def generic_staples(
 def staples_in_deck(deck: Deck, staples: list[GenericStaple], zone: str = "main") -> list[GenericStaple]:
     names = {card.name for card in getattr(deck, zone)}
     return [s for s in staples if s.name in names]
+
+
+def archetype_staples(
+    decks: list[Deck],
+    staples: list[GenericStaple],
+    zone: str = "main",
+    *,
+    min_adoption: float = 0.0,
+    top: int | None = None,
+) -> list[CardStat]:
+    """How heavily each detected generic staple is run *within* a single
+    archetype's decks. Reuses `card_stats` (adoption / copies inside the
+    archetype) but keeps only cards already flagged as environment-wide
+    staples, so engine pieces stay out. Sorted by in-archetype adoption."""
+    staple_names = {s.name for s in staples}
+    stats = [
+        s
+        for s in card_stats(decks, zone)
+        if s.name in staple_names and s.adoption >= min_adoption
+    ]
+    return stats[:top] if top is not None else stats
