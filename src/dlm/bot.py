@@ -109,14 +109,6 @@ def _resolve_archetype(groups: dict[str, list[Deck]], query: str) -> str | None:
     return None
 
 
-def _notify(webhook: str, embeds: list[dict], **kwargs) -> None:
-    """Call send_embeds; log and continue on Discord errors so they never crash the run."""
-    try:
-        send_embeds(webhook, embeds, **kwargs)
-    except Exception as exc:  # noqa: BLE001
-        print(f"[Discord error] {exc}")
-
-
 def cmd_digest(_: argparse.Namespace) -> int:
     webhook = os.environ.get("DISCORD_WEBHOOK_URL")
     username = os.environ.get("DISCORD_USERNAME") or "DLM Meta Digest"
@@ -139,8 +131,11 @@ def cmd_digest(_: argparse.Namespace) -> int:
 
     embeds = digest_embeds(digest)
     if webhook:
-        _notify(webhook, embeds, content=digest_content(digest), username=username)
-        print(f"Posted digest ({len(embeds)} embeds) to Discord.")
+        try:
+            send_embeds(webhook, embeds, content=digest_content(digest), username=username)
+            print(f"[Discord] OK — posted {len(embeds)} embeds.")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[Discord] FAILED — {exc}")
     else:
         print(f"[dry-run] would post {len(embeds)} embeds:")
         print(json.dumps(embeds, indent=2, ensure_ascii=False))
