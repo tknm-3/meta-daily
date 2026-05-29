@@ -1,0 +1,24 @@
+name: CI
+
+# Offline self-test that catches regressions before they reach main.
+# No network access required: selftest.py uses synthetic data only.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run self-test
+        run: PYTHONPATH=src python scripts/selftest.py

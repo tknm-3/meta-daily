@@ -1,7 +1,7 @@
 name: DLM Meta Digest
 
-# Posts the glanceable meta digest (winning deck types, rising archetypes,
-# trending generic staples — with artwork) to Discord.
+# Posts the glanceable meta digest (winning deck types + trending generic
+# staples from tournament placements — with artwork) to Discord.
 #
 # Cadence: once a day on a schedule, AND immediately after every deploy (push to
 # main) so a freshly shipped change is visible right away. Also runnable on
