@@ -240,6 +240,43 @@ def main() -> None:
         out_tonamel.append(rec)
     report["tonamel_probes"] = out_tonamel
 
+    # --- Q3: the bracket isn't in the HTML/SSR, so find the JSON API the SPA
+    # calls. Pull script bundles from the competition page and grep them for API
+    # hosts / endpoint patterns; also try a couple of likely data hosts. -------
+    page = fetch(f"https://tonamel.com/competition/{code}", accept="text/html,*/*")
+    page_html = page.get("text", "") or ""
+    scripts = re.findall(r'<script[^>]+src="([^"]+)"', page_html)
+    scripts = [s if s.startswith("http") else "https://tonamel.com" + s for s in scripts]
+    api_hints: set[str] = set()
+    bundle_probes = []
+    for src in scripts[:8]:
+        js = fetch(src, accept="*/*")
+        body = js.get("text", "") or ""
+        hits = set(re.findall(r"https?://[a-z0-9.\-]+(?:/[^\s\"'`]*)?", body, re.I))
+        api_like = sorted({
+            h for h in hits
+            if ("api" in h or "graphql" in h) and "tonamel" in h
+        })[:15]
+        ep = sorted(set(re.findall(r"[\"'`](/[a-z0-9_\-/]*(?:competition|match|bracket|participant|result)[a-z0-9_\-/]*)", body, re.I)))[:20]
+        api_hints.update(api_like)
+        bundle_probes.append({
+            "src": src, "status": js.get("status"), "bytes": js.get("bytes"),
+            "api_like_urls": api_like, "endpoint_paths": ep,
+        })
+    report["tonamel_bundle_scan"] = {
+        "script_count": len(scripts),
+        "api_hosts_found": sorted(api_hints),
+        "bundles": bundle_probes,
+    }
+    # Try discovered API hosts + common guesses against this competition.
+    guesses = sorted(api_hints) + [
+        "https://api.tonamel.com/", "https://tonamel.com/graphql",
+    ]
+    report["tonamel_api_attempts"] = [
+        analyze(fetch(u, accept="application/json,*/*"), keep_snippet=300)
+        for u in guesses[:8]
+    ]
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False))
     print(json.dumps(report, indent=2, ensure_ascii=False)[:4000])
