@@ -114,12 +114,27 @@ def staples_embed(digest: Digest, *, top: int = 12) -> dict | None:
     if not staples:
         return None
     embed: dict = {
-        "title": "🃏 流行りの汎用札（複数の入賞構築で採用）",
+        "title": "🃏 入賞構築の汎用札（複数の大会入賞デッキで採用）",
         "url": TOP_DECKS_URL,
         "color": _BLUE,
         "description": _join_budget([_staple_line(s) for s in staples], budget=4096),
     }
-    # Lead card's art as a thumbnail to make the post visual at a glance.
+    art = next((card_image_url(s.staple.card_id) for s in staples if s.staple.card_id), None)
+    if art:
+        embed["thumbnail"] = {"url": art}
+    return embed
+
+
+def all_staples_embed(digest: Digest, *, top: int = 12) -> dict | None:
+    staples = digest.all_staples[:top]
+    if not staples:
+        return None
+    embed: dict = {
+        "title": "🃏 全体の汎用札（KoG・大会を含む複数デッキタイプで採用）",
+        "url": TOP_DECKS_URL,
+        "color": _BLUE,
+        "description": _join_budget([_staple_line(s) for s in staples], budget=4096),
+    }
     art = next((card_image_url(s.staple.card_id) for s in staples if s.staple.card_id), None)
     if art:
         embed["thumbnail"] = {"url": art}
@@ -151,12 +166,12 @@ def deck_staples_embed(digest: Digest, *, top_decks: int = 6) -> dict | None:
 def digest_embeds(digest: Digest) -> list[dict]:
     """The full digest as a list of embeds (one Discord message)."""
     embeds = [summary_embed(digest)]
-    staples = staples_embed(digest)
-    if staples:
-        embeds.append(staples)
-    deck_staples = deck_staples_embed(digest)
-    if deck_staples:
-        embeds.append(deck_staples)
+    if s := staples_embed(digest):
+        embeds.append(s)
+    if s := all_staples_embed(digest):
+        embeds.append(s)
+    if s := deck_staples_embed(digest):
+        embeds.append(s)
     return embeds
 
 
