@@ -126,12 +126,37 @@ def staples_embed(digest: Digest, *, top: int = 12) -> dict | None:
     return embed
 
 
+def deck_staples_embed(digest: Digest, *, top_decks: int = 6) -> dict | None:
+    """Per-deck view: for each top winning deck, the generic staples it's
+    actually running and how heavily (adoption within that archetype)."""
+    fields = []
+    for w in digest.winning_decks[:top_decks]:
+        if not w.staples:
+            continue
+        value = _join_budget(
+            [f"**{s.name}** {_pct(s.adoption)}・{_copies(s)}" for s in w.staples]
+        )
+        fields.append({"name": w.archetype, "value": value, "inline": True})
+    if not fields:
+        return None
+    return {
+        "title": "🃏 デッキ別の流行りの汎用札",
+        "url": TOP_DECKS_URL,
+        "color": _BLUE,
+        "description": "勝っているデッキそれぞれで採用されている汎用札（デッキ内採用率）",
+        "fields": fields[:25],
+    }
+
+
 def digest_embeds(digest: Digest) -> list[dict]:
     """The full digest as a list of embeds (one Discord message)."""
     embeds = [summary_embed(digest)]
     staples = staples_embed(digest)
     if staples:
         embeds.append(staples)
+    deck_staples = deck_staples_embed(digest)
+    if deck_staples:
+        embeds.append(deck_staples)
     return embeds
 
 

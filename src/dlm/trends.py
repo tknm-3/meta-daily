@@ -18,7 +18,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
-from .analyze import GenericStaple, generic_staples
+from .analyze import (
+    CardStat,
+    GenericStaple,
+    archetype_staples,
+    generic_staples,
+    group_by_archetype,
+)
 from .models import TOURNAMENT, Deck
 
 # Placement → score, so "actually winning" outranks "merely Top 16". Anything
@@ -36,6 +42,12 @@ _TREND_BAND = 0.15
 # (a card splashed across ≥2 placing archetypes, each with ≥2 decks, counts).
 _STAPLE_MIN_ARCHETYPES = 2
 _STAPLE_MIN_ARCH_SIZE = 2
+
+# Per-deck staples: how a detected generic staple is run *within* one archetype.
+# Only surface staples adopted by a meaningful share of that deck's lists, and
+# cap how many we show per deck so the section stays glanceable.
+_DECK_STAPLE_MIN_ADOPTION = 0.40
+_DECK_STAPLE_TOP = 5
 
 
 def _placement_score(placement: str | None) -> int:
@@ -75,6 +87,7 @@ class WinningDeck:
     score: float         # weighted placement score, current window
     prev_score: float    # same score in the previous window
     tier: int | None = None
+    staples: list[CardStat] = field(default_factory=list)  # popular staples in THIS deck
 
     @property
     def trend(self) -> str:
@@ -112,7 +125,11 @@ def _in_window(decks: list[Deck], start: datetime, end: datetime) -> list[Deck]:
     return [d for d in decks if d.created and start <= d.created < end]
 
 
-def _winning_decks(current: list[Deck], previous: list[Deck]) -> list[WinningDeck]:
+def _winning_decks(
+    current: list[Deck],
+    previous: list[Deck],
+    staples: list[GenericStaple] | None = None,
+) -> list[WinningDeck]:
     cur_t = [d for d in current if d.category == TOURNAMENT]
     prev_t = [d for d in previous if d.category == TOURNAMENT]
 
@@ -131,6 +148,11 @@ def _winning_decks(current: list[Deck], previous: list[Deck]) -> list[WinningDec
         score[a] = score.get(a, 0) + _placement_score(d.placement)
         tier.setdefault(a, d.tier)
 
+    # Per-deck staples: of the environment-wide staples, which are run in this
+    # archetype's own placement builds, and how heavily (adoption within the deck).
+    groups = group_by_archetype(cur_t)
+    staple_pool = staples or []
+
     decks = [
         WinningDeck(
             archetype=a,
@@ -139,6 +161,12 @@ def _winning_decks(current: list[Deck], previous: list[Deck]) -> list[WinningDec
             score=score[a],
             prev_score=prev_score.get(a, 0.0),
             tier=tier.get(a),
+            staples=archetype_staples(
+                groups.get(a, []),
+                staple_pool,
+                min_adoption=_DECK_STAPLE_MIN_ADOPTION,
+                top=_DECK_STAPLE_TOP,
+            ),
         )
         for a in entries
     ]
@@ -171,7 +199,8 @@ def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> D
     cur_t = [d for d in current if d.category == TOURNAMENT]
     prev_t = [d for d in previous if d.category == TOURNAMENT]
 
-    winning = _winning_decks(current, previous)
+    staple_trends = _staple_trends(cur_t, prev_t)
+    winning = _winning_decks(current, previous, [s.staple for s in staple_trends])
     headline_icon = next((d.tournament_icon for d in cur_t if d.tournament_icon), None)
 
     return Digest(
@@ -182,6 +211,6 @@ def build_digest(decks: list[Deck], *, now: datetime, window_days: int = 5) -> D
         total_decks=len(current),
         tournament_decks=len(cur_t),
         winning_decks=winning,
-        staples=_staple_trends(cur_t, prev_t),
+        staples=staple_trends,
         headline_icon=headline_icon,
     )
