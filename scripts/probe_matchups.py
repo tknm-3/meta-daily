@@ -74,6 +74,20 @@ def fetch(url: str, *, accept: str = "application/json, text/plain, */*",
     return rec
 
 
+def _all_keys(obj, out=None) -> set:
+    """Every dict key appearing anywhere in a nested JSON structure."""
+    if out is None:
+        out = set()
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            out.add(k)
+            _all_keys(v, out)
+    elif isinstance(obj, list):
+        for v in obj:
+            _all_keys(v, out)
+    return out
+
+
 def scan_text(text: str) -> dict:
     low = text.lower()
     found_kw = sorted({k.strip() for k in BRACKET_KEYWORDS if k in low})
@@ -120,6 +134,7 @@ def main() -> None:
                 break
     report["found_tournament_deck"] = bool(sample)
 
+    tonamel_code = None
     if sample:
         art = sample["linkedArticle"]
         art_id = art.get("_id")
@@ -131,35 +146,62 @@ def main() -> None:
             "article_url": art_url,
         }
 
-        # Q1: probe candidate ways to read the report ARTICLE content.
-        candidates = [
-            f"{DLM}/api/v1/articles/{art_id}",
-            f"{DLM}/api/v1/articles?_id={art_id}",
-            f"{DLM}/api/v1/articles?url={art_url}",
-            f"{DLM}/api/v1/article/{art_id}",
-            f"{DLM}{art_url}",  # the HTML report page (Nuxt blob)
-        ]
-        report["report_probes"] = [
-            analyze(fetch(u, accept="*/*", referer=f"{DLM}{art_url}"))
-            for u in candidates
-        ]
+        # Q1: read the report ARTICLE and inspect its STRUCTURE. We confirmed
+        # `?_id=` returns JSON; now dump the article object's keys, look for any
+        # inline match/result structures, and extract the Tonamel link.
+        art_rec = fetch(f"{DLM}/api/v1/articles?_id={art_id}",
+                        accept="*/*", referer=f"{DLM}{art_url}")
+        art_text = art_rec.pop("text", "") or ""
+        art_obj = None
+        try:
+            parsed = json.loads(art_text)
+            art_obj = parsed[0] if isinstance(parsed, list) and parsed else parsed
+        except Exception:  # noqa: BLE001
+            pass
+        if isinstance(art_obj, dict):
+            art_rec["article_top_keys"] = sorted(art_obj.keys())
+            # Which keys (anywhere) hint at structured match data?
+            hint = re.compile(r"match|result|bracket|standing|round|winner|score",
+                              re.I)
+            art_rec["match_like_keys"] = sorted({
+                k for k in _all_keys(art_obj) if hint.search(k)
+            })
+            # The prose body, if any, and the bracket link within it.
+            body = art_obj.get("content") or art_obj.get("body") or ""
+            art_rec["content_field_len"] = len(body) if isinstance(body, str) else None
+        art_rec["scan"] = scan_text(art_text)
+        # Extract a Tonamel competition code (e.g. .../competition/VA23z/...).
+        m = re.search(r"tonamel\.com/competition/([A-Za-z0-9]+)", art_text)
+        tonamel_code = m.group(1) if m else None
+        art_rec["tonamel_code"] = tonamel_code
+        report["report_article"] = art_rec
 
-    # --- Q2: Tonamel reachability + data shape from CI ------------------------
-    tonamel_probes = [
-        fetch("https://tonamel.com/", accept="text/html,*/*"),
-        # A competition page pattern (id is illustrative; we mostly want to know
-        # whether the host responds and whether pages carry an embedded JSON
-        # blob we could parse).
-        fetch("https://tonamel.com/competition/", accept="text/html,*/*"),
+    # --- Q2: Tonamel — find the API that serves bracket/match data ------------
+    code = tonamel_code or "VA23z"
+    report["tonamel_competition_code"] = code
+    tonamel_targets = [
+        f"https://tonamel.com/competition/{code}",
+        f"https://tonamel.com/competition/{code}/tournament",
+        # Candidate JSON/API shapes to discover (most will 404; that's data too).
+        f"https://tonamel.com/api/competition/{code}",
+        f"https://tonamel.com/api/v1/competition/{code}",
+        f"https://tonamel.com/competition/{code}/tournament.json",
     ]
     out_tonamel = []
-    for rec in tonamel_probes:
-        text = rec.get("text", "") or ""
-        rec.pop("text", None)
+    for url in tonamel_targets:
+        rec = fetch(url, accept="text/html,application/json,*/*")
+        text = rec.pop("text", "") or ""
         rec["has_next_data"] = "__NEXT_DATA__" in text
-        rec["has_apollo_state"] = "APOLLO_STATE" in text or "apollo" in text.lower()
+        rec["has_nuxt_data"] = "__NUXT__" in text
         rec["mentions_graphql"] = "graphql" in text.lower()
-        rec["snippet"] = text[:400]
+        # Pull referenced API paths so we can chase the real data endpoint.
+        api_paths = sorted(set(
+            re.findall(r"https?://[a-z0-9.\-]+/[^\s\"'<>\\)]*api[^\s\"'<>\\)]*", text, re.I)
+            + re.findall(r"[\"'](/api/[^\"'\s]+)", text)
+        ))[:25]
+        rec["api_paths_referenced"] = api_paths
+        rec["scan"] = scan_text(text)
+        rec["snippet"] = text[:500]
         out_tonamel.append(rec)
     report["tonamel_probes"] = out_tonamel
 
