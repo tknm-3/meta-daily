@@ -1,5 +1,5 @@
 {
-  "probed_at": "2026-05-29T06:40:01.062004+00:00",
+  "probed_at": "2026-05-29T06:41:36.778611+00:00",
   "question": "Is match-level (head-to-head) tournament data obtainable?",
   "found_tournament_deck": true,
   "sample_tournament": {
@@ -59,6 +59,25 @@
       "has_nuxt_data": true,
       "mentions_graphql": false,
       "api_paths_referenced": [],
+      "nuxt": {
+        "blob_len": 652,
+        "keyword_counts": {
+          "match": 0,
+          "winner": 0,
+          "loser": 0,
+          "participant": 0,
+          "competitor": 0,
+          "entry": 0,
+          "bracket": 0,
+          "round": 0,
+          "score": 0,
+          "result": 0,
+          "seed": 0,
+          "name": 0,
+          "team": 0
+        },
+        "context_samples": []
+      },
       "scan": {
         "bracket_keywords_found": [
           "match",
@@ -72,7 +91,7 @@
           "https://tonamel.com/organization/H8zPQ"
         ]
       },
-      "snippet": "<!doctype html>\n<html lang=\"ja\" prefix=\"og: http://ogp.me/ns#\" data-n-head=\"%7B%22lang%22:%7B%221%22:%22ja%22%7D,%22prefix%22:%7B%221%22:%22og:%20http://ogp.me/ns#%22%7D%7D\">\n  <head>\n    <title>\nSky Striker Cup#94 - Tonamel    </title>\n    <meta name=\"twitter:title\" content=\"Sky Striker Cup#94 - Tonamel\">\n    <meta name=\"description\" content=\"⚠️⚠️⚠️请遵循最新禁限表比赛！比赛时间：每周四晚9点参加方式：Tonamel联络，自由建房约战提交卡组截止时间：当日晚8点55分⏰⏰比赛赛制：单淘，BO3，一副主卡组无Side禁限表：最新举办条件：报名人数16人以上（满员128人）比赛注意事项：决定好对战对手后请务必打招呼，根据打招呼的时间来处理迟到。"
+      "snippet": "<!doctype html>\n<html lang=\"ja\" prefix=\"og: http://ogp.me/ns#\" data-n-head=\"%7B%22lang%22:%7B%221%22:%22ja%22%7D,%22prefix%22:%7B%221%22:%22og:%20http://ogp.me/ns#%22%7D%7D\">\n  <head>\n    <title>\nSky Striker Cup#94 - Tonamel    </title>\n    <meta name=\"twitter:title\" content=\"Sky Striker Cup#94 - To"
     },
     {
       "url": "https://tonamel.com/competition/VA23z/tournament",
@@ -83,6 +102,25 @@
       "has_nuxt_data": true,
       "mentions_graphql": false,
       "api_paths_referenced": [],
+      "nuxt": {
+        "blob_len": 652,
+        "keyword_counts": {
+          "match": 0,
+          "winner": 0,
+          "loser": 0,
+          "participant": 0,
+          "competitor": 0,
+          "entry": 0,
+          "bracket": 0,
+          "round": 0,
+          "score": 0,
+          "result": 0,
+          "seed": 0,
+          "name": 0,
+          "team": 0
+        },
+        "context_samples": []
+      },
       "scan": {
         "bracket_keywords_found": [
           "bracket"
@@ -94,7 +132,7 @@
           "https://img.tonamel.com/upload_images/organize_competition/H8zPQ/535cf115bce7df948d897dd259e9afeebda2f6fc256ae1a932037c656e392393.png"
         ]
       },
-      "snippet": "<!doctype html>\n<html lang=\"ja\" prefix=\"og: http://ogp.me/ns#\" data-n-head=\"%7B%22lang%22:%7B%221%22:%22ja%22%7D,%22prefix%22:%7B%221%22:%22og:%20http://ogp.me/ns#%22%7D%7D\">\n  <head>\n    <title>\nSky Striker Cup#94 - Bracket - Tonamel    </title>\n    <meta name=\"twitter:title\" content=\"Sky Striker Cup#94 - Bracket - Tonamel\">\n    <meta name=\"description\" content=\"Sky Striker Cup#94 tournament bracket\">\n    <meta name=\"twitter:description\" content=\"Sky Striker Cup#94 tournament bracket\">\n    <met"
+      "snippet": "<!doctype html>\n<html lang=\"ja\" prefix=\"og: http://ogp.me/ns#\" data-n-head=\"%7B%22lang%22:%7B%221%22:%22ja%22%7D,%22prefix%22:%7B%221%22:%22og:%20http://ogp.me/ns#%22%7D%7D\">\n  <head>\n    <title>\nSky Striker Cup#94 - Bracket - Tonamel    </title>\n    <meta name=\"twitter:title\" content=\"Sky Striker C"
     },
     {
       "url": "https://tonamel.com/api/competition/VA23z",
