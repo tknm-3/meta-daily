@@ -1,5 +1,5 @@
 {
-  "probed_at": "2026-05-29T06:41:36.778611+00:00",
+  "probed_at": "2026-05-29T06:43:01.928317+00:00",
   "question": "Is match-level (head-to-head) tournament data obtainable?",
   "found_tournament_deck": true,
   "sample_tournament": {
@@ -178,6 +178,79 @@
         "external_bracket_urls": []
       },
       "snippet": ""
+    }
+  ],
+  "tonamel_bundle_scan": {
+    "script_count": 9,
+    "api_hosts_found": [],
+    "bundles": [
+      {
+        "src": "https://consent.cookiebot.com/uc.js",
+        "status": 200,
+        "bytes": 118302,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://one.adingo.jp/tag/tonamel/3475e17e-d509-4589-8309-f29cee5e2c63.js",
+        "status": 200,
+        "bytes": 11569,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://www.googletagmanager.com/gtag/js?id=G-2T07DDR6CW",
+        "status": 200,
+        "bytes": 479291,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://securepubads.g.doubleclick.net/tag/js/gpt.js",
+        "status": 200,
+        "bytes": 112317,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://fam.adingo.jp/bid-strap/tonamel/pb.js",
+        "status": 200,
+        "bytes": 709936,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://tonamel.com/nuxt/ebbc4f5871-c516361ef6-e5b4a420e3-5a46220d34/_nuxt/runtime.0aa775ed661d890661ec.js",
+        "status": 200,
+        "bytes": 7278,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://tonamel.com/nuxt/ebbc4f5871-c516361ef6-e5b4a420e3-5a46220d34/_nuxt/commons.app.0aa775ed661d890661ec.js",
+        "status": 200,
+        "bytes": 200390,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      },
+      {
+        "src": "https://tonamel.com/nuxt/ebbc4f5871-c516361ef6-e5b4a420e3-5a46220d34/_nuxt/vendors.app.0aa775ed661d890661ec.js",
+        "status": 200,
+        "bytes": 1034551,
+        "api_like_urls": [],
+        "endpoint_paths": []
+      }
+    ]
+  },
+  "tonamel_api_attempts": [
+    {
+      "url": "https://api.tonamel.com/",
+      "error": "URLError: <urlopen error [Errno -2] Name or service not known>"
+    },
+    {
+      "url": "https://tonamel.com/graphql",
+      "status": 405,
+      "error": "HTTPError 405 Method Not Allowed"
     }
   ]
 }
