@@ -38,10 +38,12 @@ _OTHER = 1
 _TREND_BAND = 0.15
 
 # Staple detection over the tournament-only corpus. The placement sample is much
-# smaller than the full ladder corpus, so the spread/size thresholds are relaxed
-# (a card splashed across ≥2 placing archetypes, each with ≥2 decks, counts).
+# smaller than the full ladder corpus, so the spread/size thresholds are relaxed.
+# min_arch_size=1 lets single-placement archetypes contribute: when the meta is
+# diverse (many archetypes with 1–2 decks each), requiring ≥2 decks per archetype
+# silently excludes most of the corpus and produces an empty staple list.
 _STAPLE_MIN_ARCHETYPES = 2
-_STAPLE_MIN_ARCH_SIZE = 2
+_STAPLE_MIN_ARCH_SIZE = 1
 
 # Per-deck staples: how a detected generic staple is run *within* one archetype.
 # Only surface staples adopted by a meaningful share of that deck's lists, and
